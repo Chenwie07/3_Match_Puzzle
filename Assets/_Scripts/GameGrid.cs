@@ -249,22 +249,19 @@ public class GameGrid : MonoBehaviour
             int piece1Y = piece1.Y;
 
             piece1.MovableComponent.MovePiece(piece2.X, piece2.Y, fillTime);
-            piece2.MovableComponent.MovePiece(piece1.X, piece1.Y, fillTime);
+            piece2.MovableComponent.MovePiece(piece1X, piece1Y, fillTime);
 
         }
     }
 
     // one line function. 
     public void PressPiece(GamePiece piece) => pressedPiece = piece;
-    public void EnterPiece(GamePiece piece) => enteredPiece = piece; 
+    public void EnterPiece(GamePiece piece) => enteredPiece = piece;
     public void ReleasePiece()
     {
         if (IsAdjacent(pressedPiece, enteredPiece))
         {
-            if (IsAdjacent(pressedPiece, enteredPiece))
-            {
-                SwapPieces(pressedPiece, enteredPiece); 
-            }
+            SwapPieces(pressedPiece, enteredPiece);
         }
     }
 
