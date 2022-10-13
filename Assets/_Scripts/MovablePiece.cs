@@ -6,7 +6,7 @@ using UnityEngine;
 public class MovablePiece : MonoBehaviour
 {
     private GamePiece piece;
-    private IEnumerator moveCoroutine; // storing this, menas we can stop it when 
+    private IEnumerator moveCoroutine; // storing this, means we can stop it when 
     // another move call occurs or something if we desire. 
     private void Awake()
     {
@@ -14,12 +14,6 @@ public class MovablePiece : MonoBehaviour
     }
     internal void MovePiece(int newX, int newY, float time )
     {
-        //piece.X = newX;
-        //piece.Y = newY;
-
-        //piece.transform.localPosition =
-        //    piece.GridRef.GetWorldPosition(newX, newY);
-
         if (moveCoroutine != null)
             StopCoroutine(moveCoroutine);
         moveCoroutine = MoveCoroutine(newX, newY, time);

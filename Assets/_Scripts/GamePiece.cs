@@ -58,12 +58,10 @@ public class GamePiece : MonoBehaviour
     private void OnMouseEnter()
     {
         GridRef.EnterPiece(this);
-        print(this.name); 
     }
     private void OnMouseDown()
     {
         GridRef.PressPiece(this);
-        print(this.name); 
     }
     private void OnMouseUp()
     {

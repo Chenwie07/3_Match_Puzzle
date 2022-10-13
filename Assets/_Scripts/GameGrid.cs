@@ -245,12 +245,19 @@ public class GameGrid : MonoBehaviour
             pieces[piece1.X, piece1.Y] = piece2;
             pieces[piece2.X, piece2.Y] = piece1;
 
-            int piece1X = piece1.X;
-            int piece1Y = piece1.Y;
+            // we only swap when there's a match. 
+            if (GetMatch(piece1, piece2.X, piece2.Y) != null || GetMatch(piece2, piece1.X, piece1.Y) != null)
+            {
+                int piece1X = piece1.X;
+                int piece1Y = piece1.Y;
 
-            piece1.MovableComponent.MovePiece(piece2.X, piece2.Y, fillTime);
-            piece2.MovableComponent.MovePiece(piece1X, piece1Y, fillTime);
-
+                piece1.MovableComponent.MovePiece(piece2.X, piece2.Y, fillTime);
+                piece2.MovableComponent.MovePiece(piece1X, piece1Y, fillTime);
+            }else
+            {
+                pieces[piece1.X, piece1.Y] = piece1;
+                pieces[piece2.X, piece2.Y] = piece2; 
+            }
         }
     }
 
@@ -265,4 +272,111 @@ public class GameGrid : MonoBehaviour
         }
     }
 
+    public List<GamePiece> GetMatch(GamePiece piece, int newX, int newY)
+    {
+        if (piece.IsColored())
+        {
+            ColorPiece.ColorType color = piece.ColorComponent.Color;
+            List<GamePiece> horizontalPieces = new List<GamePiece>();
+            List<GamePiece> verticalPieces = new List<GamePiece>();
+            List<GamePiece> matchingPieces = new List<GamePiece>();
+
+            // If the future we face matching and swapping problems with regards to that 
+            // check the codes here. 
+            #region Checking Horizontal
+            // first check horizontal. 
+            horizontalPieces.Add(piece);
+
+            for (int dir = 0; dir <= 1; dir++)
+            {
+                for (int xOffset = 1; xOffset < xDim; xOffset++)
+                {
+                    int x;
+                    if (dir == 0)
+                    {
+                        // left
+                        x = newX - xOffset;
+                    }
+                    else
+                    {
+                        // Right
+                        x = newX + xOffset;
+                    }
+                    if (x < 0 || x >= xDim)
+                    {
+                        break;
+                    }
+                    if (pieces[x, newY].IsColored() && pieces[x, newY].ColorComponent.Color == color)
+                    {
+                        horizontalPieces.Add(pieces[x, newY]);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+
+            if (horizontalPieces.Count >= 3)
+            {
+                for (int i = 0; i < horizontalPieces.Count; i++)
+                {
+                    matchingPieces.Add(horizontalPieces[i]);
+                }
+            }
+            if (matchingPieces.Count >= 3)
+            {
+                return matchingPieces;
+            }
+            #endregion
+
+            #region Vertical
+            // Didn't find anything Horizontal, check vertical. 
+            verticalPieces.Add(piece);
+
+            for (int dir = 0; dir <= 1; dir++)
+            {
+                for (int yOffset = 1; yOffset < yDim; yOffset++)
+                {
+                    int y;
+                    if (dir == 0)
+                    {
+                        // up
+                        y = newX - yOffset;
+                    }
+                    else
+                    {
+                        // down
+                        y = newX + yOffset;
+                    }
+                    if (y < 0 || y >= xDim)
+                    {
+                        break;
+                    }
+                    if (pieces[newY, y].IsColored() && pieces[newY, y].ColorComponent.Color == color)
+                    {
+                        verticalPieces.Add(pieces[newY, y]);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+
+            if (verticalPieces.Count >= 3)
+            {
+                for (int i = 0; i < verticalPieces.Count; i++)
+                {
+                    matchingPieces.Add(verticalPieces[i]);
+                }
+            }
+            if (matchingPieces.Count >= 3)
+            {
+                return matchingPieces;
+            }
+        }
+        #endregion
+        return null;
+    }
 }
