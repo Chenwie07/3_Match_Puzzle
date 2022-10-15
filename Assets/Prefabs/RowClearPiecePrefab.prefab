@@ -14,8 +14,8 @@ GameObject:
   - component: {fileID: 5589532801205891210}
   - component: {fileID: 4279066008009132776}
   - component: {fileID: 4211630062700320070}
-  - component: {fileID: 6493961089786496700}
   - component: {fileID: 4580967502553024272}
+  - component: {fileID: -7211529717910106157}
   m_Layer: 0
   m_Name: RowClearPiecePrefab
   m_TagString: Untagged
@@ -165,19 +165,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.28, y: 1.28}
   m_EdgeRadius: 0
---- !u!114 &6493961089786496700
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7268749351480122254}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d863738dbf3dea546b73b3422fb79096, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  clearAnimation: {fileID: 7400000, guid: 1762d5df4f93f8b41ae721ba1a9a9443, type: 2}
 --- !u!95 &4580967502553024272
 Animator:
   serializedVersion: 4
@@ -191,10 +178,24 @@ Animator:
   m_Controller: {fileID: 9100000, guid: 638f9a1f9c7bcd44380fd237eb815185, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &-7211529717910106157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7268749351480122254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78549b43d88185043b875e726abea371, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clearAnimation: {fileID: 7400000, guid: 1762d5df4f93f8b41ae721ba1a9a9443, type: 2}
+  isRow: 1

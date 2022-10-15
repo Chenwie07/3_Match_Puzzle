@@ -20,7 +20,7 @@ public class ClearablePiece : MonoBehaviour
         isBeingCleared = false;
     }
 
-    public void ClearPiece()
+    public virtual void ClearPiece()
     {
         isBeingCleared = true;
         StartCoroutine(ClearCoroutine());

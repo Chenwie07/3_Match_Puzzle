@@ -9,6 +9,8 @@ public class GameGrid : MonoBehaviour
         EMPTY,
         NORMAL,
         BOX,
+        ROW_CLEAR, 
+        COLUMN_CLEAR,
         COUNT,
     };
 
@@ -250,7 +252,15 @@ public class GameGrid : MonoBehaviour
                 piece2.MovableComponent.MovePiece(piece1X, piece1Y, fillTime);
 
                 ClearAllValidMatches();
+                if (piece1.Type == PieceType.ROW_CLEAR || piece1.Type == PieceType.COLUMN_CLEAR)
+                {
+                    ClearPiece(piece1.X, piece1.Y); 
+                }
 
+                if (piece2.Type == PieceType.ROW_CLEAR || piece2.Type == PieceType.COLUMN_CLEAR)
+                {
+                    ClearPiece(piece2.X, piece2.Y);
+                }
                 pressedPiece = null;
                 enteredPiece = null; 
 
@@ -496,11 +506,44 @@ public class GameGrid : MonoBehaviour
                         int specialPieceX = randomPiece.X; 
                         int specialPieceY = randomPiece.Y; 
 
+                        if (match.Count == 4)
+                        {
+                            if (pressedPiece == null || enteredPiece == null)
+                            {
+                                specialPieceType = (PieceType)Random.Range((int)PieceType.ROW_CLEAR, (int)PieceType.COLUMN_CLEAR); 
+                            }
+                            else if (pressedPiece.Y == enteredPiece.Y)
+                            {
+                                specialPieceType = PieceType.ROW_CLEAR; 
+                            }else
+                            {
+                                specialPieceType = PieceType.COLUMN_CLEAR; 
+                            }
+                        }
+
                         for (int i = 0; i < match.Count; i++)
                         {
                             if (ClearPiece(match[i].X, match[i].Y))
                             {
                                 needsRefill = true;
+
+                                if (match[i] == pressedPiece || match[i] == enteredPiece)
+                                {
+                                    specialPieceX = match[i].X; 
+                                    specialPieceY = match[i].Y;
+                                }
+                            }
+                        }
+                        if (specialPieceType != PieceType.COUNT)
+                        {
+                            Destroy(pieces[specialPieceX, specialPieceY]);
+                            GamePiece newPiece = SpawnNewPiece(specialPieceX, specialPieceY, specialPieceType); 
+                        
+                            if ((specialPieceType == PieceType.ROW_CLEAR || specialPieceType == PieceType.COLUMN_CLEAR)
+                                && newPiece.IsColored() && match[0].IsColored())
+                            {
+                                newPiece.ColorComponent.SetColor(match[0].ColorComponent.Color);
+                                newPiece.GetComponent<SpriteRenderer>().sprite = newPiece.ColorComponent.GetReferencedColorSprite(); 
                             }
                         }
                     }
@@ -547,6 +590,22 @@ public class GameGrid : MonoBehaviour
                     SpawnNewPiece(x, adjacentY, PieceType.EMPTY);
                 }
             }
+        }
+    }
+
+    public void ClearRow(int row)
+    {
+        for (int x = 0; x < xDim; x++)
+        {
+            ClearPiece(x, row); 
+        }
+    }
+
+    public void ClearColumn(int column)
+    {
+        for (int y = 0; y < yDim; y++)
+        {
+            ClearPiece(column, y); 
         }
     }
 }
