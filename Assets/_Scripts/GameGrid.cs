@@ -404,9 +404,9 @@ public class GameGrid : MonoBehaviour
                     {
                         break;
                     }
-                    if (pieces[newY, y].IsColored() && pieces[newY, y].ColorComponent.Color == color)
+                    if (pieces[newX, y].IsColored() && pieces[newX, y].ColorComponent.Color == color)
                     {
-                        verticalPieces.Add(pieces[newY, y]);
+                        verticalPieces.Add(pieces[newX, y]);
                     }
                     else
                     {
