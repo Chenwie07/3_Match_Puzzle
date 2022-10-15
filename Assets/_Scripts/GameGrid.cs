@@ -105,24 +105,20 @@ public class GameGrid : MonoBehaviour
         SpawnNewPiece(5, 4, PieceType.BOX);
         Destroy(pieces[6, 4].gameObject);
         SpawnNewPiece(6, 4, PieceType.BOX);
-        Destroy(pieces[7, 4].gameObject);
-        SpawnNewPiece(7, 4, PieceType.BOX);
 
         StartCoroutine(Fill());
     }
-
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
     public IEnumerator Fill()
     {
-        while (FillStep())
+        bool needsRefill = true;
+        while (needsRefill)
         {
-            inverse = !inverse;
-            yield return new WaitForSeconds(fillTime);
+            while (FillStep())
+            {
+                inverse = !inverse;
+                yield return new WaitForSeconds(fillTime);
+            }
+            needsRefill = ClearAllValidMatches(); 
         }
     }
     public bool FillStep()
@@ -218,7 +214,6 @@ public class GameGrid : MonoBehaviour
         }
         return movedPiece;
     }
-
     public Vector2 GetWorldPosition(int x, int y)
     {
         return new Vector2(transform.position.x - xDim / 2.0f + x, transform.position.y + yDim / 2.0f - y);
@@ -245,7 +240,7 @@ public class GameGrid : MonoBehaviour
             pieces[piece1.X, piece1.Y] = piece2;
             pieces[piece2.X, piece2.Y] = piece1;
 
-            // we only swap when there's a match. 
+            //we only swap when there's a match. 
             if (GetMatch(piece1, piece2.X, piece2.Y) != null || GetMatch(piece2, piece1.X, piece1.Y) != null)
             {
                 int piece1X = piece1.X;
@@ -253,14 +248,21 @@ public class GameGrid : MonoBehaviour
 
                 piece1.MovableComponent.MovePiece(piece2.X, piece2.Y, fillTime);
                 piece2.MovableComponent.MovePiece(piece1X, piece1Y, fillTime);
-            }else
+
+                ClearAllValidMatches();
+
+                pressedPiece = null;
+                enteredPiece = null; 
+
+                StartCoroutine(Fill());
+            }
+            else
             {
                 pieces[piece1.X, piece1.Y] = piece1;
-                pieces[piece2.X, piece2.Y] = piece2; 
+                pieces[piece2.X, piece2.Y] = piece2;
             }
         }
     }
-
     // one line function. 
     public void PressPiece(GamePiece piece) => pressedPiece = piece;
     public void EnterPiece(GamePiece piece) => enteredPiece = piece;
@@ -271,7 +273,6 @@ public class GameGrid : MonoBehaviour
             SwapPieces(pressedPiece, enteredPiece);
         }
     }
-
     public List<GamePiece> GetMatch(GamePiece piece, int newX, int newY)
     {
         if (piece.IsColored())
@@ -294,7 +295,7 @@ public class GameGrid : MonoBehaviour
                     int x;
                     if (dir == 0)
                     {
-                        // left
+                        // Going left
                         x = newX - xOffset;
                     }
                     else
@@ -304,6 +305,7 @@ public class GameGrid : MonoBehaviour
                     }
                     if (x < 0 || x >= xDim)
                     {
+                        // if x goes outside of bounds, we break out of the loop. 
                         break;
                     }
                     if (pieces[x, newY].IsColored() && pieces[x, newY].ColorComponent.Color == color)
@@ -312,7 +314,7 @@ public class GameGrid : MonoBehaviour
                     }
                     else
                     {
-                        break;
+                        break; // stop traversing in this direction. 
                     }
                 }
             }
@@ -324,14 +326,63 @@ public class GameGrid : MonoBehaviour
                     matchingPieces.Add(horizontalPieces[i]);
                 }
             }
+            // if we find a horizontal match for 3, we need to check for vertical in the same vein. 
+            // that is traversing vertically to look for an L or T match.
+            if (horizontalPieces.Count >= 3)
+            {
+                for (int i = 0; i < horizontalPieces.Count; i++)
+                {
+                    for (int dir = 0; dir <= 1; dir++)
+                    {
+                        for (int yOffset = 1; yOffset < yDim; yOffset++)
+                        {
+                            int y;
+                            if (dir == 0)
+                            {
+                                // traverse up. 
+                                y = newY - yOffset;
+                            }
+                            else
+                            {
+                                y = newY + yOffset;
+                            }
+
+                            if (y < 0 || y >= yDim)
+                            {
+                                break; // outside dimensions. 
+                            }
+                            if (pieces[horizontalPieces[i].X, y].IsColored() && pieces[horizontalPieces[i].X, y].ColorComponent.Color == color)
+                            {
+                                verticalPieces.Add(pieces[horizontalPieces[i].X, y]);
+                            }
+                            else { break; }
+                        }
+                    }
+                    if (verticalPieces.Count < 2)
+                    {
+                        verticalPieces.Clear();
+                    }
+                    else
+                    {
+                        for (int j = 0; j < verticalPieces.Count; j++)
+                        {
+                            matchingPieces.Add(verticalPieces[j]);
+                        }
+                        break;
+                    }
+                }
+            }
+
             if (matchingPieces.Count >= 3)
             {
                 return matchingPieces;
             }
             #endregion
-
             #region Vertical
             // Didn't find anything Horizontal, check vertical. 
+            // first clear the vertical and horizontal arrays to get ready to start again. 
+            horizontalPieces.Clear();
+            verticalPieces.Clear();
             verticalPieces.Add(piece);
 
             for (int dir = 0; dir <= 1; dir++)
@@ -341,13 +392,13 @@ public class GameGrid : MonoBehaviour
                     int y;
                     if (dir == 0)
                     {
-                        // up
-                        y = newX - yOffset;
+                        // Traversing Up
+                        y = newY - yOffset;
                     }
                     else
                     {
-                        // down
-                        y = newX + yOffset;
+                        // Traversing down
+                        y = newY + yOffset;
                     }
                     if (y < 0 || y >= xDim)
                     {
@@ -371,6 +422,53 @@ public class GameGrid : MonoBehaviour
                     matchingPieces.Add(verticalPieces[i]);
                 }
             }
+            // if we find a verticle match for 3, we need to check for vertical in the same vein. 
+            // that is traversing horizontally to look for an L or T match.
+            if (verticalPieces.Count >= 3)
+            {
+                for (int i = 0; i < verticalPieces.Count; i++)
+                {
+                    for (int dir = 0; dir <= 1; dir++)
+                    {
+                        for (int xOffset = 1; xOffset < xDim; xOffset++)
+                        {
+                            int x;
+                            if (dir == 0)
+                            {
+                                // traverse left. 
+                                x = newX - xOffset;
+                            }
+                            else
+                            {// traverse right
+                                x = newX + xOffset;
+                            }
+
+                            if (x < 0 || x >= yDim)
+                            {
+                                break; // outside dimensions. 
+                            }
+                            if (pieces[x, verticalPieces[i].Y].IsColored() && pieces[x, verticalPieces[i].Y].ColorComponent.Color == color)
+                            {
+                                //verticalPieces.Add(pieces[x, verticalPieces[i].Y]);
+                                horizontalPieces.Add(pieces[x, verticalPieces[i].Y]);
+                            }
+                            else { break; }
+                        }
+                    }
+                    if (horizontalPieces.Count < 2)
+                    {
+                        horizontalPieces.Clear();
+                    }
+                    else
+                    {
+                        for (int j = 0; j < horizontalPieces.Count; j++)
+                        {
+                            matchingPieces.Add(horizontalPieces[j]);
+                        }
+                        break;
+                    }
+                }
+            }
             if (matchingPieces.Count >= 3)
             {
                 return matchingPieces;
@@ -378,5 +476,77 @@ public class GameGrid : MonoBehaviour
         }
         #endregion
         return null;
+    }
+    public bool ClearAllValidMatches()
+    {
+        // checking full board after a Clear for any resulting matches that can were made. 
+        // we can use this to make sure our board is randomly shuffled if they're not matches left. 
+        bool needsRefill = false;
+        for (int y = 0; y < yDim; y++)
+        {
+            for (int x = 0; x < xDim; x++)
+            {
+                if (pieces[x, y].IsClearable())
+                {
+                    List<GamePiece> match = GetMatch(pieces[x, y], x, y);
+                    if (match != null)
+                    {
+                        PieceType specialPieceType = PieceType.COUNT;
+                        GamePiece randomPiece = match[Random.Range(0, match.Count)];
+                        int specialPieceX = randomPiece.X; 
+                        int specialPieceY = randomPiece.Y; 
+
+                        for (int i = 0; i < match.Count; i++)
+                        {
+                            if (ClearPiece(match[i].X, match[i].Y))
+                            {
+                                needsRefill = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return needsRefill;
+    }
+    public bool ClearPiece(int x, int y) // takes position on the grid to clear. 
+    {
+        if (pieces[x, y].IsClearable() && !pieces[x, y].ClearableComponent.IsBeingCleared)
+        {
+            pieces[x, y].ClearableComponent.ClearPiece(); // clear the piece
+            SpawnNewPiece(x, y, PieceType.EMPTY);
+
+            ClearObstacles(x, y);
+
+            return true;
+        }
+        return false;
+    }
+
+    public void ClearObstacles(int x, int y)
+    {
+        for (int adjacentX = x - 1; adjacentX <= x + 1; adjacentX++)
+        {
+            if (adjacentX != x && adjacentX >= 0 && adjacentX < xDim)
+            {
+                if (pieces[adjacentX, y].Type == PieceType.BOX && pieces[adjacentX, y].IsClearable())
+                {
+                    pieces[adjacentX, y].ClearableComponent.ClearPiece();
+                    SpawnNewPiece(adjacentX, y, PieceType.EMPTY);
+
+                }
+            }
+        }
+        for (int adjacentY = y - 1; adjacentY <= y + 1; adjacentY++)
+        {
+            if (adjacentY != y && adjacentY >= 0 && adjacentY < yDim)
+            {
+                if (pieces[x, adjacentY].Type == PieceType.BOX && pieces[x, adjacentY].IsClearable())
+                {
+                    pieces[x, adjacentY].ClearableComponent.ClearPiece();
+                    SpawnNewPiece(x, adjacentY, PieceType.EMPTY);
+                }
+            }
+        }
     }
 }

@@ -30,12 +30,14 @@ public class GamePiece : MonoBehaviour
 
     public MovablePiece MovableComponent { get; set; }
     public ColorPiece ColorComponent { get; set; }
+    public ClearablePiece ClearableComponent { get; set; }  
     public GameGrid GridRef { get; set; }
 
     private void Awake()
     {
         ColorComponent = GetComponent<ColorPiece>(); 
         MovableComponent = GetComponent<MovablePiece>();
+        ClearableComponent = GetComponent<ClearablePiece>();
     }
 
     public void Initialize(int _x, int _y, GameGrid _Grid, GameGrid.PieceType _type)
@@ -53,6 +55,10 @@ public class GamePiece : MonoBehaviour
     public bool IsColored()
     {
         return ColorComponent != null; 
+    }
+    public bool IsClearable()
+    {
+        return ClearableComponent != null; 
     }
 
     private void OnMouseEnter()
