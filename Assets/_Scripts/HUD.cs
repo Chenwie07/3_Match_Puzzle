@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 
 public class HUD : MonoBehaviour
 {
     public Level _level;
-    public GameOver _gameOver; 
+    public GameOver _gameOver;
 
     public TextMeshProUGUI remainingText;
     public TextMeshProUGUI remainingSubtext;
@@ -18,7 +19,6 @@ public class HUD : MonoBehaviour
     public GameObject[] starsPanels;
 
     private int starIdx = 0;
-
     private void Start()
     {
         for (int i = 0; i < starsPanels.Length; i++)
@@ -61,31 +61,35 @@ public class HUD : MonoBehaviour
     public void SetTarget(int target) => targetText.SetText(target.ToString());
 
     public void SetRemaining(int remaining) => remainingText.SetText(remaining.ToString());
-    public void SetRemaining(string remaining) => remainingText.SetText(remaining); 
+    public void SetRemaining(string remaining) => remainingText.SetText(remaining);
 
     public void SetlevelType(Level.LevelType type)
     {
         if (type == Level.LevelType.MOVES)
         {
             remainingSubtext.SetText("moves remaining");
-            targetSubtext.SetText("target score"); 
-        }else if (type == Level.LevelType.OBSTACLE)
+            targetSubtext.SetText("target score");
+        }
+        else if (type == Level.LevelType.OBSTACLE)
         {
             remainingSubtext.SetText("moves remaining");
-            targetSubtext.SetText("boxes remaining"); 
-        }else if (type == Level.LevelType.TIMER)
+            targetSubtext.SetText("boxes remaining");
+        }
+        else if (type == Level.LevelType.TIMER)
         {
             remainingSubtext.SetText("time remaining");
-            targetSubtext.SetText("target score"); 
+            targetSubtext.SetText("target score");
         }
     }
 
     public void OnGameWin(int score)
     {
-        _gameOver.ShowWin(score, starIdx); 
+        _gameOver.ShowWin(score, starIdx);
+        if (starIdx > PlayerPrefs.GetInt(SceneManager.GetActiveScene().name, 0))
+            PlayerPrefs.SetInt(SceneManager.GetActiveScene().name, starIdx);
     }
     public void OnGameLose()
     {
-        _gameOver.ShowLose(); 
+        _gameOver.ShowLose();
     }
 }
