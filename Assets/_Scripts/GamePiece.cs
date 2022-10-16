@@ -33,6 +33,8 @@ public class GamePiece : MonoBehaviour
     public ClearablePiece ClearableComponent { get; set; }  
     public GameGrid GridRef { get; set; }
 
+    public int score; 
+
     private void Awake()
     {
         ColorComponent = GetComponent<ColorPiece>(); 

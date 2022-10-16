@@ -9,8 +9,9 @@ public class GameGrid : MonoBehaviour
         EMPTY,
         NORMAL,
         BOX,
-        ROW_CLEAR, 
+        ROW_CLEAR,
         COLUMN_CLEAR,
+        RAINBOW,
         COUNT,
     };
 
@@ -19,7 +20,17 @@ public class GameGrid : MonoBehaviour
     {
         public PieceType type;
         public GameObject prefab;
-    };
+    }
+
+    [System.Serializable]
+    public struct PiecePosition
+    {
+        public PieceType type;
+        public int x;
+        public int y;
+    }
+    public PiecePosition[] initialPieces;
+
 
     public int xDim;
     public int yDim;
@@ -37,8 +48,11 @@ public class GameGrid : MonoBehaviour
 
     private GamePiece pressedPiece;
     private GamePiece enteredPiece;
-    // Start is called before the first frame update
-    void Start()
+
+    private bool gameOver = false;
+
+    public Level _level;
+    void Awake()
     {
         // then we use this start menu to populate our dictionary with what was passed through the inspector to the struture array. 
         piecePrefabDictionary = new Dictionary<PieceType, GameObject>();
@@ -60,6 +74,16 @@ public class GameGrid : MonoBehaviour
         }
 
         pieces = new GamePiece[xDim, yDim];
+
+        for (int i = 0; i < initialPieces.Length; i++)
+        {
+            if (initialPieces[i].x >= 0 && initialPieces[i].x < xDim &&
+                initialPieces[i].y >= 0 && initialPieces[i].y < yDim)
+            {
+                SpawnNewPiece(initialPieces[i].x, initialPieces[i].y, initialPieces[i].type);
+            }
+        }
+
         for (int x = 0; x < xDim; x++)
         {
             for (int y = 0; y < yDim; y++)
@@ -89,25 +113,12 @@ public class GameGrid : MonoBehaviour
                     // or we could use the multiple function calls we did above. 
                 } */
                 #endregion
-                SpawnNewPiece(x, y, PieceType.EMPTY);
+                if (pieces[x, y] == null)
+                {
+                    SpawnNewPiece(x, y, PieceType.EMPTY);
+                }
             }
         }
-        // testing 
-
-        Destroy(pieces[4, 4].gameObject);
-        SpawnNewPiece(4, 4, PieceType.BOX);
-
-        Destroy(pieces[1, 4].gameObject);
-        SpawnNewPiece(1, 4, PieceType.BOX);
-        Destroy(pieces[2, 4].gameObject);
-        SpawnNewPiece(2, 4, PieceType.BOX);
-        Destroy(pieces[3, 4].gameObject);
-        SpawnNewPiece(3, 4, PieceType.BOX);
-        Destroy(pieces[5, 4].gameObject);
-        SpawnNewPiece(5, 4, PieceType.BOX);
-        Destroy(pieces[6, 4].gameObject);
-        SpawnNewPiece(6, 4, PieceType.BOX);
-
         StartCoroutine(Fill());
     }
     public IEnumerator Fill()
@@ -120,7 +131,7 @@ public class GameGrid : MonoBehaviour
                 inverse = !inverse;
                 yield return new WaitForSeconds(fillTime);
             }
-            needsRefill = ClearAllValidMatches(); 
+            needsRefill = ClearAllValidMatches();
         }
     }
     public bool FillStep()
@@ -237,13 +248,18 @@ public class GameGrid : MonoBehaviour
 
     public void SwapPieces(GamePiece piece1, GamePiece piece2)
     {
+        if (gameOver)
+        {
+            return;
+        }
         if (piece1.IsMovable() && piece2.IsMovable())
         {
             pieces[piece1.X, piece1.Y] = piece2;
             pieces[piece2.X, piece2.Y] = piece1;
 
             //we only swap when there's a match. 
-            if (GetMatch(piece1, piece2.X, piece2.Y) != null || GetMatch(piece2, piece1.X, piece1.Y) != null)
+            if (GetMatch(piece1, piece2.X, piece2.Y) != null || GetMatch(piece2, piece1.X, piece1.Y) != null
+                 || piece1.Type == PieceType.RAINBOW || piece2.Type == PieceType.RAINBOW)
             {
                 int piece1X = piece1.X;
                 int piece1Y = piece1.Y;
@@ -251,10 +267,30 @@ public class GameGrid : MonoBehaviour
                 piece1.MovableComponent.MovePiece(piece2.X, piece2.Y, fillTime);
                 piece2.MovableComponent.MovePiece(piece1X, piece1Y, fillTime);
 
+                if (piece1.Type == PieceType.RAINBOW && piece1.IsClearable() && piece2.IsColored())
+                {
+                    ClearColorPiece clearColor = piece1.GetComponent<ClearColorPiece>();
+                    if (clearColor)
+                    {
+                        clearColor.Color = piece2.ColorComponent.Color;
+                    }
+                    ClearPiece(piece1.X, piece1.Y);
+                }
+
+                if (piece2.Type == PieceType.RAINBOW && piece2.IsClearable() && piece2.IsColored())
+                {
+                    ClearColorPiece clearColor = piece1.GetComponent<ClearColorPiece>();
+                    if (clearColor)
+                    {
+                        clearColor.Color = piece2.ColorComponent.Color;
+                    }
+                    ClearPiece(piece1.X, piece1.Y);
+                }
+
                 ClearAllValidMatches();
                 if (piece1.Type == PieceType.ROW_CLEAR || piece1.Type == PieceType.COLUMN_CLEAR)
                 {
-                    ClearPiece(piece1.X, piece1.Y); 
+                    ClearPiece(piece1.X, piece1.Y);
                 }
 
                 if (piece2.Type == PieceType.ROW_CLEAR || piece2.Type == PieceType.COLUMN_CLEAR)
@@ -262,9 +298,11 @@ public class GameGrid : MonoBehaviour
                     ClearPiece(piece2.X, piece2.Y);
                 }
                 pressedPiece = null;
-                enteredPiece = null; 
+                enteredPiece = null;
 
                 StartCoroutine(Fill());
+                _level.OnMove();
+
             }
             else
             {
@@ -453,7 +491,7 @@ public class GameGrid : MonoBehaviour
                                 x = newX + xOffset;
                             }
 
-                            if (x < 0 || x >= yDim)
+                            if (x < 0 || x >= xDim)
                             {
                                 break; // outside dimensions. 
                             }
@@ -503,22 +541,28 @@ public class GameGrid : MonoBehaviour
                     {
                         PieceType specialPieceType = PieceType.COUNT;
                         GamePiece randomPiece = match[Random.Range(0, match.Count)];
-                        int specialPieceX = randomPiece.X; 
-                        int specialPieceY = randomPiece.Y; 
+                        int specialPieceX = randomPiece.X;
+                        int specialPieceY = randomPiece.Y;
 
                         if (match.Count == 4)
                         {
                             if (pressedPiece == null || enteredPiece == null)
                             {
-                                specialPieceType = (PieceType)Random.Range((int)PieceType.ROW_CLEAR, (int)PieceType.COLUMN_CLEAR); 
+                                specialPieceType = (PieceType)Random.Range((int)PieceType.ROW_CLEAR, (int)PieceType.COLUMN_CLEAR);
                             }
                             else if (pressedPiece.Y == enteredPiece.Y)
                             {
-                                specialPieceType = PieceType.ROW_CLEAR; 
-                            }else
-                            {
-                                specialPieceType = PieceType.COLUMN_CLEAR; 
+                                specialPieceType = PieceType.ROW_CLEAR;
                             }
+                            else
+                            {
+                                specialPieceType = PieceType.COLUMN_CLEAR;
+                            }
+                        }
+                        // we use greater than or equal because clearing 6 or more tiles didn't give anything. 
+                        else if (match.Count >= 5)
+                        {
+                            specialPieceType = PieceType.RAINBOW;
                         }
 
                         for (int i = 0; i < match.Count; i++)
@@ -529,7 +573,7 @@ public class GameGrid : MonoBehaviour
 
                                 if (match[i] == pressedPiece || match[i] == enteredPiece)
                                 {
-                                    specialPieceX = match[i].X; 
+                                    specialPieceX = match[i].X;
                                     specialPieceY = match[i].Y;
                                 }
                             }
@@ -537,13 +581,17 @@ public class GameGrid : MonoBehaviour
                         if (specialPieceType != PieceType.COUNT)
                         {
                             Destroy(pieces[specialPieceX, specialPieceY]);
-                            GamePiece newPiece = SpawnNewPiece(specialPieceX, specialPieceY, specialPieceType); 
-                        
+                            GamePiece newPiece = SpawnNewPiece(specialPieceX, specialPieceY, specialPieceType);
+
                             if ((specialPieceType == PieceType.ROW_CLEAR || specialPieceType == PieceType.COLUMN_CLEAR)
                                 && newPiece.IsColored() && match[0].IsColored())
                             {
                                 newPiece.ColorComponent.SetColor(match[0].ColorComponent.Color);
-                                newPiece.GetComponent<SpriteRenderer>().sprite = newPiece.ColorComponent.GetReferencedColorSprite(); 
+                                newPiece.GetComponent<SpriteRenderer>().sprite = newPiece.ColorComponent.GetReferencedColorSprite();
+                            }
+                            else if (specialPieceType == PieceType.RAINBOW && newPiece.IsColored())
+                            {
+                                newPiece.ColorComponent.SetColor(ColorPiece.ColorType.ANY);
                             }
                         }
                     }
@@ -597,7 +645,7 @@ public class GameGrid : MonoBehaviour
     {
         for (int x = 0; x < xDim; x++)
         {
-            ClearPiece(x, row); 
+            ClearPiece(x, row);
         }
     }
 
@@ -605,7 +653,42 @@ public class GameGrid : MonoBehaviour
     {
         for (int y = 0; y < yDim; y++)
         {
-            ClearPiece(column, y); 
+            ClearPiece(column, y);
         }
     }
+
+    public void ClearColor(ColorPiece.ColorType color)
+    {
+        for (int x = 0; x < xDim; x++)
+        {
+            for (int y = 0; y < yDim; y++)
+            {
+                if (pieces[x, y].IsColored() && (pieces[x, y]).ColorComponent.Color == color
+                    || color == ColorPiece.ColorType.ANY)
+                {
+                    ClearPiece(x, y);
+                }
+            }
+        }
+    }
+    public void GameOver()
+    {
+        gameOver = true;
+    }
+    public List<GamePiece> GetPiecesOfType(PieceType type)
+    {
+        List<GamePiece> piecesOfType = new List<GamePiece>();
+        for (int x = 0; x < xDim; x++)
+        {
+            for (int y = 0; y < yDim; y++)
+            {
+                if (pieces[x, y].Type == type)
+                {
+                    piecesOfType.Add(pieces[x, y]); 
+                }
+            }
+        }
+        return piecesOfType; 
+    }
+
 }
