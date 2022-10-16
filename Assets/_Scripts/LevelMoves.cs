@@ -12,15 +12,20 @@ public class LevelMoves : Level
     private void Start()
     {
         type = LevelType.MOVES;
+        _levelHUD.SetlevelType(Type);
+        _levelHUD.SetScore(currentScore);
+        _levelHUD.SetTarget(targetScore);
+        _levelHUD.SetRemaining(numMoves); 
 
-        Debug.Log($"Number of moves: {numMoves} Target score: {targetScore}"); 
+        //Debug.Log($"Number of moves: {numMoves} Target score: {targetScore}"); 
     }
 
     public override void OnMove()
     {
         movesUsed++;
 
-        Debug.Log("Moves remaining: " + (numMoves - movesUsed)); 
+        _levelHUD.SetRemaining(numMoves - movesUsed); 
+        //Debug.Log("Moves remaining: " + (numMoves - movesUsed)); 
 
         if (numMoves - movesUsed == 0)
         {

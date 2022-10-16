@@ -16,30 +16,34 @@ public class Level : MonoBehaviour
         get { return type; }
     }
     public GameGrid _gameGrid;
+    public HUD _levelHUD; 
 
     public int score1Star; 
     public int score2Star; 
     public int score3Star;
 
-    protected int currentScore; 
+    protected int currentScore;
 
+    private void Start()
+    {
+        _levelHUD.SetScore(currentScore); 
+    }
     public virtual void GameWin()
     {
-        Debug.Log("You Win!"); 
+        _levelHUD.OnGameWin(currentScore); 
         _gameGrid.GameOver();
     }
     public virtual void GameLose()
     {
-        Debug.Log("You Lose!");
+        _levelHUD.OnGameLose();
         _gameGrid.GameOver(); 
     }
     public virtual void OnMove()
     {
-        Debug.Log("You Moved"); 
     }
     public virtual void OnPieceCleared(GamePiece piece)
     {
         currentScore += piece.score;
-        Debug.Log("Score: " + currentScore); 
+        _levelHUD.SetScore(currentScore); 
     }
 }
