@@ -7,6 +7,7 @@ using TMPro;
 public class HUD : MonoBehaviour
 {
     public Level _level;
+    public GameOver _gameOver; 
 
     public TextMeshProUGUI remainingText;
     public TextMeshProUGUI remainingSubtext;
@@ -17,7 +18,6 @@ public class HUD : MonoBehaviour
     public GameObject[] starsPanels;
 
     private int starIdx = 0;
-    private bool isGameOver;
 
     private void Start()
     {
@@ -82,10 +82,10 @@ public class HUD : MonoBehaviour
 
     public void OnGameWin(int score)
     {
-        isGameOver = true; 
+        _gameOver.ShowWin(score, starIdx); 
     }
     public void OnGameLose()
     {
-        isGameOver = true; 
+        _gameOver.ShowLose(); 
     }
 }

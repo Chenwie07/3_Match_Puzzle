@@ -725,6 +725,8 @@ GameObject:
   - component: {fileID: 966880118}
   - component: {fileID: 966880120}
   - component: {fileID: 966880119}
+  - component: {fileID: 966880121}
+  - component: {fileID: 966880122}
   m_Layer: 5
   m_Name: panel_GameOver
   m_TagString: Untagged
@@ -795,6 +797,48 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!95 &966880121
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 966880117}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 84e82627fb25981458c336008c0734f0, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &966880122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 966880117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dfa45ab1265e9394c9774c1858254247, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  panelParent: {fileID: 966880117}
+  scoreParent: {fileID: 1730055324}
+  loseText: {fileID: 1483800063}
+  winText: {fileID: 1004299644}
+  scoreText: {fileID: 1329388628}
+  panelStars:
+  - {fileID: 1105155320}
+  - {fileID: 977010420}
+  - {fileID: 213920077}
+  - {fileID: 1228902337}
 --- !u!1 &977010420
 GameObject:
   m_ObjectHideFlags: 0
@@ -1157,7 +1201,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1088077532}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 966880122}
+        m_TargetAssemblyTypeName: GameOver, Assembly-CSharp
+        m_MethodName: OnReplayClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1088291489
 GameObject:
   m_ObjectHideFlags: 0
@@ -1279,7 +1335,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1088291492}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 966880122}
+        m_TargetAssemblyTypeName: GameOver, Assembly-CSharp
+        m_MethodName: OnDoneClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1105155320
 GameObject:
   m_ObjectHideFlags: 0
@@ -2946,6 +3014,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _level: {fileID: 0}
+  _gameOver: {fileID: 0}
   remainingText: {fileID: 7387288750590652086}
   remainingSubtext: {fileID: 7387288751238517101}
   targetText: {fileID: 7387288750316847183}

@@ -52,6 +52,7 @@ public class GameGrid : MonoBehaviour
     private bool gameOver = false;
 
     public Level _level;
+    public bool IsFilling { get; set; }
     void Awake()
     {
         // then we use this start menu to populate our dictionary with what was passed through the inspector to the struture array. 
@@ -124,6 +125,7 @@ public class GameGrid : MonoBehaviour
     public IEnumerator Fill()
     {
         bool needsRefill = true;
+        IsFilling = true; 
         while (needsRefill)
         {
             while (FillStep())
@@ -133,6 +135,7 @@ public class GameGrid : MonoBehaviour
             }
             needsRefill = ClearAllValidMatches();
         }
+        IsFilling = false; 
     }
     public bool FillStep()
     {

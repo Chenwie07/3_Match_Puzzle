@@ -10,33 +10,35 @@ public class Level : MonoBehaviour
     }
 
     protected LevelType type;
-    
+    protected bool DidWin;
     public LevelType Type
     {
         get { return type; }
     }
     public GameGrid _gameGrid;
-    public HUD _levelHUD; 
+    public HUD _levelHUD;
 
-    public int score1Star; 
-    public int score2Star; 
+    public int score1Star;
+    public int score2Star;
     public int score3Star;
 
     protected int currentScore;
 
     private void Start()
     {
-        _levelHUD.SetScore(currentScore); 
+        _levelHUD.SetScore(currentScore);
     }
     public virtual void GameWin()
     {
-        _levelHUD.OnGameWin(currentScore); 
+        DidWin = true;
         _gameGrid.GameOver();
+        StartCoroutine(WaitForGridFill()); 
     }
     public virtual void GameLose()
     {
-        _levelHUD.OnGameLose();
-        _gameGrid.GameOver(); 
+        DidWin = false;
+        _gameGrid.GameOver();
+        StartCoroutine(WaitForGridFill());
     }
     public virtual void OnMove()
     {
@@ -44,6 +46,16 @@ public class Level : MonoBehaviour
     public virtual void OnPieceCleared(GamePiece piece)
     {
         currentScore += piece.score;
-        _levelHUD.SetScore(currentScore); 
+        _levelHUD.SetScore(currentScore);
+    }
+    protected virtual IEnumerator WaitForGridFill()
+    {
+        while (_gameGrid.IsFilling)
+            yield return 0;
+        if (DidWin)
+        {
+            _levelHUD.OnGameWin(currentScore);
+        }
+        else _levelHUD.OnGameLose();
     }
 }
