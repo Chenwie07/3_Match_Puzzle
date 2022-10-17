@@ -9,6 +9,7 @@ public class GameGrid : MonoBehaviour
         EMPTY,
         NORMAL,
         BOX,
+        ICEBLOCK,
         ROW_CLEAR,
         COLUMN_CLEAR,
         RAINBOW,
