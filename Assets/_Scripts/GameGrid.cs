@@ -611,7 +611,7 @@ public class GameGrid : MonoBehaviour
             SpawnNewPiece(x, y, PieceType.EMPTY);
 
             ClearObstacles(x, y);
-
+            PlaySFX.Singleton.AUDIO_PlayClearFX(); // play clear fx. 
             return true;
         }
         return false;
