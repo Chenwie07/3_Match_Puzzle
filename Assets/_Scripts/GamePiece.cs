@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class GamePiece : MonoBehaviour
 {
@@ -30,14 +31,14 @@ public class GamePiece : MonoBehaviour
 
     public MovablePiece MovableComponent { get; set; }
     public ColorPiece ColorComponent { get; set; }
-    public ClearablePiece ClearableComponent { get; set; }  
+    public ClearablePiece ClearableComponent { get; set; }
     public GameGrid GridRef { get; set; }
 
-    public int score; 
+    public int score;
 
     private void Awake()
     {
-        ColorComponent = GetComponent<ColorPiece>(); 
+        ColorComponent = GetComponent<ColorPiece>();
         MovableComponent = GetComponent<MovablePiece>();
         ClearableComponent = GetComponent<ClearablePiece>();
     }
@@ -56,23 +57,30 @@ public class GamePiece : MonoBehaviour
 
     public bool IsColored()
     {
-        return ColorComponent != null; 
+        return ColorComponent != null;
     }
     public bool IsClearable()
     {
-        return ClearableComponent != null; 
+        return ClearableComponent != null;
     }
 
     private void OnMouseEnter()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+            return;
         GridRef.EnterPiece(this);
     }
     private void OnMouseDown()
     {
+        // if we are pressing through a UI (we will create a transparent panel to block out touches, then just return). 
+        if (EventSystem.current.IsPointerOverGameObject())
+            return;
         GridRef.PressPiece(this);
     }
     private void OnMouseUp()
     {
-        GridRef.ReleasePiece(); 
+        if (EventSystem.current.IsPointerOverGameObject())
+            return;
+        GridRef.ReleasePiece();
     }
 }

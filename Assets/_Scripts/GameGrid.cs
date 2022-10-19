@@ -126,9 +126,10 @@ public class GameGrid : MonoBehaviour
     public IEnumerator Fill()
     {
         bool needsRefill = true;
-        IsFilling = true; 
+        IsFilling = true;
         while (needsRefill)
         {
+            print(IsFilling); 
             while (FillStep())
             {
                 inverse = !inverse;
@@ -136,7 +137,11 @@ public class GameGrid : MonoBehaviour
             }
             needsRefill = ClearAllValidMatches();
         }
-        IsFilling = false; 
+        yield return new WaitForSeconds(fillTime); 
+        yield return new WaitUntil(() => !needsRefill);
+        IsFilling = false;
+        print(IsFilling); 
+
     }
     public bool FillStep()
     {
@@ -258,6 +263,7 @@ public class GameGrid : MonoBehaviour
         }
         if (piece1.IsMovable() && piece2.IsMovable())
         {
+            IsFilling = true; // the moment a match starts,the board is filling, otherwise some actions will occur before it stops filling. 
             pieces[piece1.X, piece1.Y] = piece2;
             pieces[piece2.X, piece2.Y] = piece1;
 
@@ -452,7 +458,7 @@ public class GameGrid : MonoBehaviour
                         // Traversing down
                         y = newY + yOffset;
                     }
-                    if (y < 0 || y >= xDim)
+                    if (y < 0 || y >= yDim)
                     {
                         break;
                     }
@@ -618,6 +624,9 @@ public class GameGrid : MonoBehaviour
         return false;
     }
 
+    // we have to pass the type of obstacle that's being destroyed, 
+    // which this function will use to conjure it's operations. 
+    // Events is the proper way to handle this situations, but for the purpose of this lesson
     public void ClearObstacles(int x, int y)
     {
         for (int adjacentX = x - 1; adjacentX <= x + 1; adjacentX++)
@@ -628,7 +637,14 @@ public class GameGrid : MonoBehaviour
                 {
                     pieces[adjacentX, y].ClearableComponent.ClearPiece();
                     SpawnNewPiece(adjacentX, y, PieceType.EMPTY);
-
+                }
+                else if (pieces[adjacentX, y].Type == PieceType.ICEBLOCK && pieces[adjacentX, y].IsClearable())
+                {
+                    bool spawnNew = pieces[adjacentX, y].ClearableComponent.ClearStep();
+                    if (spawnNew)
+                    {
+                        SpawnNewPiece(adjacentX, y, PieceType.EMPTY);
+                    }
                 }
             }
         }
@@ -641,10 +657,20 @@ public class GameGrid : MonoBehaviour
                     pieces[x, adjacentY].ClearableComponent.ClearPiece();
                     SpawnNewPiece(x, adjacentY, PieceType.EMPTY);
                 }
+                else if (pieces[x, adjacentY].Type == PieceType.ICEBLOCK && pieces[x, adjacentY].IsClearable())
+                {
+                    bool spawnNew = pieces[x, adjacentY].ClearableComponent.ClearStep();
+                    if (spawnNew)
+                    {
+                        SpawnNewPiece(x, adjacentY, PieceType.EMPTY);
+                    }
+                }
             }
         }
+        // otherwise for our Iceblock, we have to operate differently. 
     }
 
+    #region SPECIAL TILES CLEAR 
     public void ClearRow(int row)
     {
         for (int x = 0; x < xDim; x++)
@@ -660,7 +686,6 @@ public class GameGrid : MonoBehaviour
             ClearPiece(column, y);
         }
     }
-
     public void ClearColor(ColorPiece.ColorType color)
     {
         for (int x = 0; x < xDim; x++)
@@ -675,6 +700,7 @@ public class GameGrid : MonoBehaviour
             }
         }
     }
+    #endregion
     public void GameOver()
     {
         gameOver = true;
@@ -688,11 +714,11 @@ public class GameGrid : MonoBehaviour
             {
                 if (pieces[x, y].Type == type)
                 {
-                    piecesOfType.Add(pieces[x, y]); 
+                    piecesOfType.Add(pieces[x, y]);
                 }
             }
         }
-        return piecesOfType; 
+        return piecesOfType;
     }
 
 }

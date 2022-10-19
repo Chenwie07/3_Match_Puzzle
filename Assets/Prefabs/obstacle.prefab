@@ -133,3 +133,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clearAnimation: {fileID: 7400000, guid: b1f6c6583dd03c44c9633d8995bd2452, type: 2}
+  _clearStep: {fileID: 0}

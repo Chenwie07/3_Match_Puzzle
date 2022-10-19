@@ -170,7 +170,7 @@ MonoBehaviour:
     y: 4
   xDim: 6
   yDim: 6
-  fillTime: 0.05
+  fillTime: 0.08
   backgroundTilePrefab: {fileID: 787768537085530146, guid: 45e148e453554bb4b9e31f14765c9914, type: 3}
   piecePrefabs:
   - type: 0
@@ -179,11 +179,11 @@ MonoBehaviour:
     prefab: {fileID: 6822247807076938689, guid: d5c4665f63e335b419e7dc3c8a1537d0, type: 3}
   - type: 2
     prefab: {fileID: 7815209213166634445, guid: c2b50d157c1a24e459950e2bfa6406f5, type: 3}
-  - type: 3
-    prefab: {fileID: 7268749351480122254, guid: e268fbf3955c5f446aef798c4dd65c6d, type: 3}
   - type: 4
-    prefab: {fileID: 1253183811461058575, guid: acc2569bb68054c4ba070fe4aa2a5913, type: 3}
+    prefab: {fileID: 7268749351480122254, guid: e268fbf3955c5f446aef798c4dd65c6d, type: 3}
   - type: 5
+    prefab: {fileID: 1253183811461058575, guid: acc2569bb68054c4ba070fe4aa2a5913, type: 3}
+  - type: 6
     prefab: {fileID: 5324426976730529400, guid: ede91cddcae173844b33042103744600, type: 3}
   _level: {fileID: 630317352}
 --- !u!4 &75315051
@@ -329,6 +329,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2096a8f459e4dca468fe5c2c0c468590, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  LevelNumber: 6
   _gameGrid: {fileID: 75315050}
   _levelHUD: {fileID: 1682078932}
   score1Star: 30000

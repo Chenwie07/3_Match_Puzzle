@@ -194,7 +194,7 @@ MonoBehaviour:
     y: 5
   xDim: 9
   yDim: 9
-  fillTime: 0.05
+  fillTime: 0.08
   backgroundTilePrefab: {fileID: 787768537085530146, guid: 45e148e453554bb4b9e31f14765c9914, type: 3}
   piecePrefabs:
   - type: 0
@@ -204,10 +204,12 @@ MonoBehaviour:
   - type: 2
     prefab: {fileID: 7815209213166634445, guid: c2b50d157c1a24e459950e2bfa6406f5, type: 3}
   - type: 3
-    prefab: {fileID: 7268749351480122254, guid: e268fbf3955c5f446aef798c4dd65c6d, type: 3}
+    prefab: {fileID: 1262308929846274485, guid: 55a1d912192f9fa48b35675ab20f9cad, type: 3}
   - type: 4
-    prefab: {fileID: 1253183811461058575, guid: acc2569bb68054c4ba070fe4aa2a5913, type: 3}
+    prefab: {fileID: 7268749351480122254, guid: e268fbf3955c5f446aef798c4dd65c6d, type: 3}
   - type: 5
+    prefab: {fileID: 1253183811461058575, guid: acc2569bb68054c4ba070fe4aa2a5913, type: 3}
+  - type: 6
     prefab: {fileID: 5324426976730529400, guid: ede91cddcae173844b33042103744600, type: 3}
   _level: {fileID: 630317352}
 --- !u!4 &75315051
@@ -218,7 +220,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 75315049}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2, y: 0, z: 0}
+  m_LocalPosition: {x: 2, y: -0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -353,6 +355,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d0aa627d00456846b085fead065c254, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  LevelNumber: 2
   _gameGrid: {fileID: 75315050}
   _levelHUD: {fileID: 1682078932}
   score1Star: 18000
@@ -924,6 +927,10 @@ PrefabInstance:
       propertyPath: _level
       value: 
       objectReference: {fileID: 630317352}
+    - target: {fileID: 7387288750226921517, guid: 44f4e5e1902edb3469ce5acf7421f1d5, type: 3}
+      propertyPath: _gameOver
+      value: 
+      objectReference: {fileID: 1682078933}
     - target: {fileID: 7387288750623328591, guid: 44f4e5e1902edb3469ce5acf7421f1d5, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1079,6 +1086,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 93cee0844564c154c8b83a6e14b7d5a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1682078933 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 966880122, guid: 44f4e5e1902edb3469ce5acf7421f1d5, type: 3}
+  m_PrefabInstance: {fileID: 1682078931}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dfa45ab1265e9394c9774c1858254247, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1798424247

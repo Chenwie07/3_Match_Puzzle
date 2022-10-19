@@ -11,6 +11,7 @@ public class Level : MonoBehaviour
 
     protected LevelType type;
     protected bool DidWin;
+    public int LevelNumber; 
     public LevelType Type
     {
         get { return type; }
@@ -32,7 +33,7 @@ public class Level : MonoBehaviour
     {
         DidWin = true;
         _gameGrid.GameOver();
-        StartCoroutine(WaitForGridFill()); 
+        StartCoroutine(WaitForGridFill());
     }
     public virtual void GameLose()
     {
@@ -50,8 +51,7 @@ public class Level : MonoBehaviour
     }
     protected virtual IEnumerator WaitForGridFill()
     {
-        while (_gameGrid.IsFilling)
-            yield return 0;
+        yield return new WaitUntil(() => !_gameGrid.IsFilling);
         if (DidWin)
         {
             _levelHUD.OnGameWin(currentScore);

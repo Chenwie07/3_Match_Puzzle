@@ -155,7 +155,7 @@ MonoBehaviour:
   initialPieces: []
   xDim: 8
   yDim: 8
-  fillTime: 0.05
+  fillTime: 0.08
   backgroundTilePrefab: {fileID: 787768537085530146, guid: 45e148e453554bb4b9e31f14765c9914, type: 3}
   piecePrefabs:
   - type: 0
@@ -164,11 +164,11 @@ MonoBehaviour:
     prefab: {fileID: 6822247807076938689, guid: d5c4665f63e335b419e7dc3c8a1537d0, type: 3}
   - type: 2
     prefab: {fileID: 7815209213166634445, guid: c2b50d157c1a24e459950e2bfa6406f5, type: 3}
-  - type: 3
-    prefab: {fileID: 7268749351480122254, guid: e268fbf3955c5f446aef798c4dd65c6d, type: 3}
   - type: 4
-    prefab: {fileID: 1253183811461058575, guid: acc2569bb68054c4ba070fe4aa2a5913, type: 3}
+    prefab: {fileID: 7268749351480122254, guid: e268fbf3955c5f446aef798c4dd65c6d, type: 3}
   - type: 5
+    prefab: {fileID: 1253183811461058575, guid: acc2569bb68054c4ba070fe4aa2a5913, type: 3}
+  - type: 6
     prefab: {fileID: 5324426976730529400, guid: ede91cddcae173844b33042103744600, type: 3}
   _level: {fileID: 630317352}
 --- !u!4 &75315051
@@ -455,12 +455,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2096a8f459e4dca468fe5c2c0c468590, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  LevelNumber: 3
   _gameGrid: {fileID: 75315050}
   _levelHUD: {fileID: 1711977763}
   score1Star: 25000
   score2Star: 28000
   score3Star: 32000
-  timeInSeconds: 90
+  timeInSeconds: 3
   targetScore: 50000
 --- !u!1 &661085602
 GameObject:
@@ -813,6 +814,38 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1996697279575031365, guid: 44f4e5e1902edb3469ce5acf7421f1d5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1996697279575031365, guid: 44f4e5e1902edb3469ce5acf7421f1d5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1996697279575031365, guid: 44f4e5e1902edb3469ce5acf7421f1d5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
+      value: 
+      objectReference: {fileID: 1711977764}
+    - target: {fileID: 1996697279575031365, guid: 44f4e5e1902edb3469ce5acf7421f1d5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1996697279575031365, guid: 44f4e5e1902edb3469ce5acf7421f1d5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: RetrySelected
+      objectReference: {fileID: 0}
+    - target: {fileID: 1996697279575031365, guid: 44f4e5e1902edb3469ce5acf7421f1d5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
+      value: ContinueGame, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 1996697279575031365, guid: 44f4e5e1902edb3469ce5acf7421f1d5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_StringArgument
+      value: Timer
+      objectReference: {fileID: 0}
+    - target: {fileID: 1996697279575031365, guid: 44f4e5e1902edb3469ce5acf7421f1d5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 7387288749956072749, guid: 44f4e5e1902edb3469ce5acf7421f1d5, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -953,22 +986,6 @@ PrefabInstance:
       propertyPath: _level
       value: 
       objectReference: {fileID: 630317352}
-    - target: {fileID: 7387288750316847182, guid: 44f4e5e1902edb3469ce5acf7421f1d5, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 395.3724
-      objectReference: {fileID: 0}
-    - target: {fileID: 7387288750316847182, guid: 44f4e5e1902edb3469ce5acf7421f1d5, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 83
-      objectReference: {fileID: 0}
-    - target: {fileID: 7387288750467301849, guid: 44f4e5e1902edb3469ce5acf7421f1d5, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 280.7539
-      objectReference: {fileID: 0}
-    - target: {fileID: 7387288750467301854, guid: 44f4e5e1902edb3469ce5acf7421f1d5, type: 3}
-      propertyPath: m_text
-      value: target score
-      objectReference: {fileID: 0}
     - target: {fileID: 7387288750623328591, guid: 44f4e5e1902edb3469ce5acf7421f1d5, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1124,5 +1141,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 93cee0844564c154c8b83a6e14b7d5a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1711977764 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7387288750061490389, guid: 44f4e5e1902edb3469ce5acf7421f1d5, type: 3}
+  m_PrefabInstance: {fileID: 1711977762}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd084f4cfb58a6b48a456c8f0ae212a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

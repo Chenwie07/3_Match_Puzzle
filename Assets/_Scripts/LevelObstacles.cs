@@ -46,9 +46,9 @@ public class LevelObstacles : Level
                 if (numObstaclesLeft == 0)
                 {
                     currentScore += 1000 * (numMoves - movesUsed);
-                    _levelHUD.SetScore(currentScore); 
-                    //Debug.Log("current score: " + currentScore);
-                    GameWin(); 
+                    _levelHUD.SetScore(currentScore);
+                    //check if board is filling before stopping this. 
+                    GameWin();
                 }
             }
         }

@@ -63,7 +63,6 @@ public class GameOver : MonoBehaviour
                 yield return new WaitForSeconds(0.5f); 
             }
         }
-
         scoreText.enabled = true; 
     }
 

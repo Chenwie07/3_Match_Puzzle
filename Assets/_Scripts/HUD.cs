@@ -9,18 +9,24 @@ public class HUD : MonoBehaviour
 {
     public Level _level;
     public GameOver _gameOver;
+    public ContinueGame _continue;
 
     public TextMeshProUGUI remainingText;
     public TextMeshProUGUI remainingSubtext;
     public TextMeshProUGUI targetText;
     public TextMeshProUGUI targetSubtext;
     public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI currentLevelText;
+    public TextMeshProUGUI livesLeftText;
+    private int defaultLives = 3;
 
     public GameObject[] starsPanels;
 
     private int starIdx = 0;
     private void Start()
     {
+        livesLeftText.text = PlayerPrefs.GetInt("Tries Left", defaultLives).ToString();
+        currentLevelText.SetText("Level " + _level.LevelNumber);
         for (int i = 0; i < starsPanels.Length; i++)
         {
             if (i == starIdx)
@@ -90,6 +96,20 @@ public class HUD : MonoBehaviour
     }
     public void OnGameLose()
     {
-        _gameOver.ShowLose();
+        print("Calling Game Lose");
+        print(PlayerPrefs.GetInt("Tries Left", defaultLives));
+        if (PlayerPrefs.GetInt("Tries Left", defaultLives) > 0)
+        {
+            //show a different panel asking user to continue and expend tries. 
+            _continue.ShowContinuePanel();
+        }
+        else
+            _gameOver.ShowLose();
+    }
+
+    public void ReturnToLevelSelect()
+    {
+        Time.timeScale = 1;
+        SceneManager.LoadScene(0); // our first scene, levelselect is at build index 0. 
     }
 }
