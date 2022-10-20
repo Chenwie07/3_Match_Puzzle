@@ -170,6 +170,7 @@ MonoBehaviour:
     prefab: {fileID: 1253183811461058575, guid: acc2569bb68054c4ba070fe4aa2a5913, type: 3}
   - type: 6
     prefab: {fileID: 5324426976730529400, guid: ede91cddcae173844b33042103744600, type: 3}
+  toInitializeNewList: {fileID: 21300000, guid: af1a5a0fe0fa98c40827b6ec06676ac1, type: 3}
   _level: {fileID: 630317352}
 --- !u!4 &75315051
 Transform:
@@ -218,7 +219,7 @@ AudioSource:
   m_PlayOnAwake: 1
   m_Volume: 0.15
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0

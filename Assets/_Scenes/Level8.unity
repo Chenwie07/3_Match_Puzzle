@@ -187,6 +187,7 @@ MonoBehaviour:
     prefab: {fileID: 5324426976730529400, guid: ede91cddcae173844b33042103744600, type: 3}
   - type: 4
     prefab: {fileID: 7268749351480122254, guid: e268fbf3955c5f446aef798c4dd65c6d, type: 3}
+  toInitializeNewList: {fileID: 21300000, guid: af1a5a0fe0fa98c40827b6ec06676ac1, type: 3}
   _level: {fileID: 630317352}
 --- !u!4 &75315051
 Transform:
@@ -337,7 +338,7 @@ MonoBehaviour:
   score1Star: 25000
   score2Star: 28000
   score3Star: 30000
-  numMoves: 20
+  numMoves: 2
   obstacleTypes: 03000000
 --- !u!1 &661085602
 GameObject:
@@ -455,7 +456,7 @@ AudioSource:
   m_PlayOnAwake: 1
   m_Volume: 0.15
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0

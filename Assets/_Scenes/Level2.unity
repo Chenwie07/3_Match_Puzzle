@@ -211,6 +211,7 @@ MonoBehaviour:
     prefab: {fileID: 1253183811461058575, guid: acc2569bb68054c4ba070fe4aa2a5913, type: 3}
   - type: 6
     prefab: {fileID: 5324426976730529400, guid: ede91cddcae173844b33042103744600, type: 3}
+  toInitializeNewList: {fileID: 21300000, guid: af1a5a0fe0fa98c40827b6ec06676ac1, type: 3}
   _level: {fileID: 630317352}
 --- !u!4 &75315051
 Transform:
@@ -479,7 +480,7 @@ AudioSource:
   m_PlayOnAwake: 1
   m_Volume: 0.15
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -959,10 +960,6 @@ PrefabInstance:
       propertyPath: _level
       value: 
       objectReference: {fileID: 630317352}
-    - target: {fileID: 7387288750226921517, guid: 44f4e5e1902edb3469ce5acf7421f1d5, type: 3}
-      propertyPath: _gameOver
-      value: 
-      objectReference: {fileID: 1682078933}
     - target: {fileID: 7387288750623328591, guid: 44f4e5e1902edb3469ce5acf7421f1d5, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1118,17 +1115,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 93cee0844564c154c8b83a6e14b7d5a5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1682078933 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 966880122, guid: 44f4e5e1902edb3469ce5acf7421f1d5, type: 3}
-  m_PrefabInstance: {fileID: 1682078931}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dfa45ab1265e9394c9774c1858254247, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &1682078934 stripped

@@ -5770,6 +5770,7 @@ MonoBehaviour:
   scoreText: {fileID: 7387288750288833304}
   currentLevelText: {fileID: 346925675}
   livesLeftText: {fileID: 1922275606}
+  LivesLeft: 0
   starsPanels:
   - {fileID: 7387288751950645260}
   - {fileID: 7387288751682202473}
@@ -5976,7 +5977,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 15
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

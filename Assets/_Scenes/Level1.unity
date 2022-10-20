@@ -321,7 +321,7 @@ MonoBehaviour:
   score1Star: 10000
   score2Star: 12000
   score3Star: 15000
-  numMoves: 15
+  numMoves: 10
   targetScore: 12000
 --- !u!1 &661085602
 GameObject:
@@ -454,7 +454,7 @@ AudioSource:
   m_PlayOnAwake: 1
   m_Volume: 0.15
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0

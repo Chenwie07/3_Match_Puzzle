@@ -21,7 +21,7 @@ public class PlaySFX : MonoBehaviour
         }
         else { Singleton = this; }
         DontDestroyOnLoad(Singleton);
-        //PlayerPrefs.DeleteAll(); // for debugging purposes. 
+        PlayerPrefs.DeleteAll(); // for debugging purposes. 
     }
     public void AUDIO_PlayClearFX()
     {

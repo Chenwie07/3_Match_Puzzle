@@ -172,6 +172,7 @@ MonoBehaviour:
     prefab: {fileID: 5324426976730529400, guid: ede91cddcae173844b33042103744600, type: 3}
   - type: 3
     prefab: {fileID: 1262308929846274485, guid: 55a1d912192f9fa48b35675ab20f9cad, type: 3}
+  toInitializeNewList: {fileID: 21300000, guid: af1a5a0fe0fa98c40827b6ec06676ac1, type: 3}
   _level: {fileID: 630317352}
 --- !u!4 &75315051
 Transform:
@@ -322,7 +323,7 @@ MonoBehaviour:
   score1Star: 35000
   score2Star: 38000
   score3Star: 40000
-  numMoves: 15
+  numMoves: 2
   targetScore: 35000
 --- !u!1 &661085602
 GameObject:
@@ -774,7 +775,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1996697279575031365, guid: 44f4e5e1902edb3469ce5acf7421f1d5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_StringArgument
-      value: Timer
+      value: Moves
       objectReference: {fileID: 0}
     - target: {fileID: 1996697279575031365, guid: 44f4e5e1902edb3469ce5acf7421f1d5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
