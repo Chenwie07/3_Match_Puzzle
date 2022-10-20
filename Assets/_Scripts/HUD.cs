@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class HUD : MonoBehaviour
 {
@@ -18,14 +19,21 @@ public class HUD : MonoBehaviour
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI currentLevelText;
     public TextMeshProUGUI livesLeftText;
-    private int defaultLives = 3;
+    public int LivesLeft;
+
 
     public GameObject[] starsPanels;
 
     private int starIdx = 0;
+
+    private void Awake()
+    {
+        // setting the primary default value. 
+        LivesLeft = PlayerPrefs.GetInt("Tries Left", 3); 
+    }
     private void Start()
     {
-        livesLeftText.text = PlayerPrefs.GetInt("Tries Left", defaultLives).ToString();
+        livesLeftText.text = PlayerPrefs.GetInt("Tries Left", LivesLeft).ToString();
         currentLevelText.SetText("Level " + _level.LevelNumber);
         for (int i = 0; i < starsPanels.Length; i++)
         {
@@ -64,6 +72,12 @@ public class HUD : MonoBehaviour
         }
         starIdx = visibleStar;
     }
+
+    internal void UpdateLives()
+    {
+        livesLeftText.SetText(PlayerPrefs.GetInt("Tries Left").ToString());
+    }
+
     public void SetTarget(int target) => targetText.SetText(target.ToString());
 
     public void SetRemaining(int remaining) => remainingText.SetText(remaining.ToString());
@@ -96,9 +110,7 @@ public class HUD : MonoBehaviour
     }
     public void OnGameLose()
     {
-        print("Calling Game Lose");
-        print(PlayerPrefs.GetInt("Tries Left", defaultLives));
-        if (PlayerPrefs.GetInt("Tries Left", defaultLives) > 0)
+        if (PlayerPrefs.GetInt("Tries Left", LivesLeft) > 0)
         {
             //show a different panel asking user to continue and expend tries. 
             _continue.ShowContinuePanel();

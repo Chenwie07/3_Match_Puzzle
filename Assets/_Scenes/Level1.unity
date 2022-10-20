@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initialPieces: []
-  xDim: 5
+  xDim: 6
   yDim: 6
   fillTime: 0.08
   backgroundTilePrefab: {fileID: 787768537085530146, guid: 45e148e453554bb4b9e31f14765c9914, type: 3}
@@ -170,6 +170,7 @@ MonoBehaviour:
     prefab: {fileID: 1253183811461058575, guid: acc2569bb68054c4ba070fe4aa2a5913, type: 3}
   - type: 6
     prefab: {fileID: 5324426976730529400, guid: ede91cddcae173844b33042103744600, type: 3}
+  toInitializeNewList: {fileID: 21300000, guid: af1a5a0fe0fa98c40827b6ec06676ac1, type: 3}
   _level: {fileID: 630317352}
 --- !u!4 &75315051
 Transform:
@@ -317,11 +318,11 @@ MonoBehaviour:
   LevelNumber: 1
   _gameGrid: {fileID: 75315050}
   _levelHUD: {fileID: 7387288750061490387}
-  score1Star: 12000
-  score2Star: 15000
-  score3Star: 18000
-  numMoves: 14
-  targetScore: 15000
+  score1Star: 10000
+  score2Star: 12000
+  score3Star: 15000
+  numMoves: 15
+  targetScore: 12000
 --- !u!1 &661085602
 GameObject:
   m_ObjectHideFlags: 0

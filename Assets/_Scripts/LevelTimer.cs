@@ -39,4 +39,11 @@ public class LevelTimer : Level
             }
         }
     }
+    public void AddTime()
+    {
+        timeInSeconds = 15;
+        // reset timer. 
+        timer = 0; 
+        timeOut = false;
+    }
 }

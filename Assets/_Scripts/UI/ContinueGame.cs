@@ -6,13 +6,13 @@ public class ContinueGame : MonoBehaviour
 {
     public GameObject _continuePanel;
     public TMPro.TextMeshProUGUI retryHint;
+    private int defaultLives = 3;
     private void Start()
     {
         _continuePanel.SetActive(false);
     }
     public void ShowContinuePanel()
     {
-        print("should set panel active"); 
         _continuePanel.SetActive(true);
     }
     public void RetrySelected(string LevelType)
@@ -20,26 +20,29 @@ public class ContinueGame : MonoBehaviour
         if (LevelType == "Moves")
         {
             // add moves 
-            var test = FindObjectOfType<LevelMoves>().numMoves += 3;
-            print(test); 
+            FindObjectOfType<LevelMoves>().numMoves = 3;
             retryHint.SetText("Spend 1 heart to buy +3 extra moves...");
-            PlayerPrefs.SetInt("Tries Left", PlayerPrefs.GetInt("Tries Left") - 1);
+            // notify observers is a good way here (for now we go the long route). 
+            FindObjectOfType<LevelMoves>().AddMoves(); 
         }
         else if (LevelType == "Timer")
         {
             // add Time. 
-            print("Increase the time and subtract lives");
             retryHint.SetText("Spend 1 heart to buy 15 more seconds...");
-            FindObjectOfType<LevelTimer>().timeInSeconds += 15;
-            PlayerPrefs.SetInt("Tries Left", PlayerPrefs.GetInt("Tries Left") - 1);
-            print(PlayerPrefs.GetInt("Tries Left")); 
+            FindObjectOfType<LevelTimer>().AddTime();
+            // reset game over. 
+            // Will use Observer/Singleton Pattern in the future for these. 
         }
         else if (LevelType == "Obstacles")
         {
             // add moves still. 
             retryHint.SetText("Spend 1 heart to buy +3 extra moves...");
-            FindObjectOfType<LevelObstacles>().numMoves += 3;
-            PlayerPrefs.SetInt("Tries Left", PlayerPrefs.GetInt("Tries Left") - 1);
+            FindObjectOfType<LevelObstacles>().AddObstacleMoves(); 
+            // notify observers is a good way here (for now we go the long route). 
         }
+        FindObjectOfType<GameGrid>().ResumeGame();
+        PlayerPrefs.SetInt("Tries Left", PlayerPrefs.GetInt("Tries Left", defaultLives) - 1);
+        FindObjectOfType<HUD>().LivesLeft -= 1;
+        FindObjectOfType<HUD>().UpdateLives();
     }
 }

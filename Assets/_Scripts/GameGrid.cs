@@ -47,6 +47,14 @@ public class GameGrid : MonoBehaviour
 
     private bool inverse = false;
 
+    // Handling Matching at Start issues with these variables. 
+    Sprite LeftSprite = null;
+    List<Sprite> oldList = new List<Sprite>();
+    private List<Sprite> newList = new List<Sprite>();
+    private bool firstFill = false;
+
+    public Sprite toInitializeNewList;
+
     private GamePiece pressedPiece;
     private GamePiece enteredPiece;
 
@@ -56,6 +64,7 @@ public class GameGrid : MonoBehaviour
     public bool IsFilling { get; set; }
     void Awake()
     {
+        firstFill = true;
         // then we use this start menu to populate our dictionary with what was passed through the inspector to the struture array. 
         piecePrefabDictionary = new Dictionary<PieceType, GameObject>();
         for (int i = 0; i < piecePrefabs.Length; i++)
@@ -77,15 +86,9 @@ public class GameGrid : MonoBehaviour
 
         pieces = new GamePiece[xDim, yDim];
 
-        for (int i = 0; i < initialPieces.Length; i++)
-        {
-            if (initialPieces[i].x >= 0 && initialPieces[i].x < xDim &&
-                initialPieces[i].y >= 0 && initialPieces[i].y < yDim)
-            {
-                SpawnNewPiece(initialPieces[i].x, initialPieces[i].y, initialPieces[i].type);
-            }
-        }
+        // this is where initial pieces was formally at. 
 
+        // the rest is filled with empty pieces, before calling the FIll method to now fill actual tiles. 
         for (int x = 0; x < xDim; x++)
         {
             for (int y = 0; y < yDim; y++)
@@ -117,9 +120,11 @@ public class GameGrid : MonoBehaviour
                 #endregion
                 if (pieces[x, y] == null)
                 {
-                    SpawnNewPiece(x, y, PieceType.EMPTY);
+                    var piece = SpawnNewPiece(x, y, PieceType.EMPTY);
                 }
             }
+            // initialize an Empty list. 
+            newList.Add(toInitializeNewList);
         }
         StartCoroutine(Fill());
     }
@@ -129,7 +134,6 @@ public class GameGrid : MonoBehaviour
         IsFilling = true;
         while (needsRefill)
         {
-            print(IsFilling); 
             while (FillStep())
             {
                 inverse = !inverse;
@@ -137,11 +141,25 @@ public class GameGrid : MonoBehaviour
             }
             needsRefill = ClearAllValidMatches();
         }
-        yield return new WaitForSeconds(fillTime); 
+        // initial pieces are for pieces like boxes and ice blocks that will first appear on the board before the actual tiles. 
+        // we should do this after our pieces have filled the board so we can respect our firstFill mechanic. 
+        if (firstFill)
+        {
+            for (int i = 0; i < initialPieces.Length; i++)
+            {
+                // Make sure to destroy the existing piece on this position. 
+                // clear existing piece on that area before replacing. 
+                if (initialPieces[i].x >= 0 && initialPieces[i].x < xDim &&
+                    initialPieces[i].y >= 0 && initialPieces[i].y < yDim)
+                {
+                    SpawnNewPiece(initialPieces[i].x, initialPieces[i].y, initialPieces[i].type);
+                }
+            }
+        }
+        yield return new WaitForSeconds(fillTime);
         yield return new WaitUntil(() => !needsRefill);
         IsFilling = false;
-        print(IsFilling); 
-
+        firstFill = false;
     }
     public bool FillStep()
     {
@@ -167,6 +185,7 @@ public class GameGrid : MonoBehaviour
                         SpawnNewPiece(x, y, PieceType.EMPTY);
                         movedPiece = true;
                     }
+                    // this is for the cause the piece below is an obstacle. 
                     else
                     {
                         for (int diag = -1; diag <= 1; diag++)
@@ -216,24 +235,64 @@ public class GameGrid : MonoBehaviour
             }
         }
 
-        // for the top row. 
-        for (int x = 0; x < xDim; x++)
+        if (firstFill)
         {
-            GamePiece pieceBelow = pieces[x, 0];
-            if (pieceBelow.Type == PieceType.EMPTY)
+            // for the top row. This is where our primary interest is at if we intend to fix the matching as game begins bug. 
+            for (int x = 0; x < xDim; x++)
             {
-                Destroy(pieceBelow.gameObject);
-                GameObject newPiece = Instantiate(piecePrefabDictionary[PieceType.NORMAL],
-                    GetWorldPosition(x, -1), Quaternion.identity, transform);
+                GamePiece pieceBelow = pieces[x, 0];
+                if (pieceBelow.Type == PieceType.EMPTY)
+                {
+                    Destroy(pieceBelow.gameObject);
+                    GameObject newPiece = Instantiate(piecePrefabDictionary[PieceType.NORMAL],
+                        GetWorldPosition(x, -1), Quaternion.identity, transform);
 
-                pieces[x, 0] = newPiece.GetComponent<GamePiece>();
-                pieces[x, 0].Initialize(x, -1, this, PieceType.NORMAL);
-                pieces[x, 0].MovableComponent.MovePiece(x, 0, fillTime);
-                pieces[x, 0].ColorComponent.SetColor((ColorPiece.ColorType)Random.Range(0, pieces[x, 0].ColorComponent.NumColors));
-                pieces[x, 0].GetComponent<SpriteRenderer>().sprite = pieces[x, 0].ColorComponent.GetReferencedColorSprite();
-                movedPiece = true;
+                    pieces[x, 0] = newPiece.GetComponent<GamePiece>();
+                    pieces[x, 0].Initialize(x, -1, this, PieceType.NORMAL);
+                    pieces[x, 0].MovableComponent.MovePiece(x, 0, fillTime);
+
+                    // all of this checking should occur only at the start. 
+                    #region Making Sure Left tiles Don't repeat themselves 
+                    do
+                    {
+                        // also we have to store an old list of sprites, to compare when generating the ones above, making sure they
+                        // don't repeat as well. 
+                        pieces[x, 0].ColorComponent.SetColor((ColorPiece.ColorType)Random.Range(0, pieces[x, 0].ColorComponent.NumColors));
+                        pieces[x, 0].GetComponent<SpriteRenderer>().sprite = pieces[x, 0].ColorComponent.GetReferencedColorSprite();
+                    } while (LeftSprite == pieces[x, 0].GetComponent<SpriteRenderer>().sprite
+                    || pieces[x, 0].GetComponent<SpriteRenderer>().sprite == newList[x]);
+                    LeftSprite = pieces[x, 0].GetComponent<SpriteRenderer>().sprite;
+                    oldList.Add(LeftSprite);  // inserting at the index of x, so basically this list will never go beyond xDim. 
+                    #endregion
+                    movedPiece = true;
+                }
+            }
+            newList.Clear();
+            newList.AddRange(oldList);
+            //print(newList.Count);
+            oldList.Clear();
+        }
+        else
+        {
+            for (int x = 0; x < xDim; x++)
+            {
+                GamePiece pieceBelow = pieces[x, 0];
+                if (pieceBelow.Type == PieceType.EMPTY)
+                {
+                    Destroy(pieceBelow.gameObject);
+                    GameObject newPiece = Instantiate(piecePrefabDictionary[PieceType.NORMAL],
+                        GetWorldPosition(x, -1), Quaternion.identity, transform);
+                    pieces[x, 0] = newPiece.GetComponent<GamePiece>();
+                    pieces[x, 0].Initialize(x, -1, this, PieceType.NORMAL);
+                    pieces[x, 0].MovableComponent.MovePiece(x, 0, fillTime);
+                    pieces[x, 0].ColorComponent.SetColor((ColorPiece.ColorType)Random.Range(0, pieces[x, 0].ColorComponent.NumColors));
+                    pieces[x, 0].GetComponent<SpriteRenderer>().sprite = pieces[x, 0].ColorComponent.GetReferencedColorSprite();
+                    movedPiece = true;
+                }
             }
         }
+        // after calling everypiece, store the Left and Up sprites. These will be removed from the next list from which to choose 
+        // from, for the next random Color Piece selection. And our auto match issue will be fixed. 
         return movedPiece;
     }
     public Vector2 GetWorldPosition(int x, int y)
@@ -257,6 +316,7 @@ public class GameGrid : MonoBehaviour
 
     public void SwapPieces(GamePiece piece1, GamePiece piece2)
     {
+
         if (gameOver)
         {
             return;
@@ -704,6 +764,10 @@ public class GameGrid : MonoBehaviour
     public void GameOver()
     {
         gameOver = true;
+    }
+    public void ResumeGame()
+    {
+        gameOver = false;
     }
     public List<GamePiece> GetPiecesOfType(PieceType type)
     {

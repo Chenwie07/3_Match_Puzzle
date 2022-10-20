@@ -50,6 +50,7 @@ public class GamePiece : MonoBehaviour
         GridRef = _Grid;
         Type = _type;
     }
+   
     public bool IsMovable()
     {
         return !(MovableComponent == null);

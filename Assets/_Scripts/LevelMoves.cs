@@ -6,6 +6,7 @@ public class LevelMoves : Level
 {
     public int numMoves;
     public int targetScore;
+    private bool _outOfMoves; 
 
     private int movesUsed = 0;
 
@@ -22,6 +23,10 @@ public class LevelMoves : Level
 
     public override void OnMove()
     {
+        if (_outOfMoves)
+        {
+            return;
+        }
         movesUsed++;
 
         _levelHUD.SetRemaining(numMoves - movesUsed); 
@@ -29,6 +34,7 @@ public class LevelMoves : Level
 
         if (numMoves - movesUsed == 0)
         {
+            _outOfMoves = true; 
             if (currentScore >= targetScore)
             {
                 GameWin(); 
@@ -37,5 +43,12 @@ public class LevelMoves : Level
                 GameLose(); 
             }
         }
+    }
+    public void AddMoves()
+    {
+        numMoves = 3;
+        movesUsed = 0;
+        _outOfMoves = false;
+        _levelHUD.SetRemaining(numMoves); 
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,7 @@ public class LevelObstacles : Level
 {
     public int numMoves;
     public GameGrid.PieceType[] obstacleTypes;
+    private bool _outOfMoves;
 
     private int movesUsed = 0;
     private int numObstaclesLeft;
@@ -25,11 +27,14 @@ public class LevelObstacles : Level
     }
     public override void OnMove()
     {
+        if (_outOfMoves)
+            return; 
         movesUsed++;
         _levelHUD.SetRemaining(numMoves - movesUsed); 
         //Debug.Log("moves remaining: " + (numMoves - movesUsed)); 
         if (numMoves - movesUsed == 0 && numObstaclesLeft > 0)
         {
+            _outOfMoves = true; 
             GameLose(); 
         }
     }
@@ -52,5 +57,13 @@ public class LevelObstacles : Level
                 }
             }
         }
+    }
+
+    internal void AddObstacleMoves()
+    {
+        numMoves = 3;
+        movesUsed = 0;
+        _outOfMoves = false;
+        _levelHUD.SetRemaining(numMoves);
     }
 }

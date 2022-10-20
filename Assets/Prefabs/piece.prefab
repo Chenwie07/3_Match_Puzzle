@@ -179,6 +179,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clearAnimation: {fileID: 7400000, guid: 1762d5df4f93f8b41ae721ba1a9a9443, type: 2}
+  _clearStep: {fileID: 0}
 --- !u!95 &2778028665936729783
 Animator:
   serializedVersion: 4
