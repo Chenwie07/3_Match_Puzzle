@@ -16,14 +16,25 @@ public class LevelObstacles : Level
     {
         type = LevelType.OBSTACLE;
 
-        for (int i = 0; i < obstacleTypes.Length; i++)
+        // since our revised mechanic is not placing our obstacles at the very start, we can't call this here. 
+        /* 
+         * for (int i = 0; i < obstacleTypes.Length; i++)
         {
-            numObstaclesLeft += _gameGrid.GetPiecesOfType(obstacleTypes[i]).Count; 
+            numObstaclesLeft += _gameGrid.GetPiecesOfType(obstacleTypes[i]).Count;
         }
+         */
         _levelHUD.SetlevelType(Type);
         _levelHUD.SetScore(currentScore);
-        _levelHUD.SetTarget(numObstaclesLeft);
+        //_levelHUD.SetTarget(numObstaclesLeft);
         _levelHUD.SetRemaining(numMoves); 
+    }
+    internal void InitializeObstaclesLeft()
+    {
+        for (int i = 0; i < obstacleTypes.Length; i++)
+        {
+            numObstaclesLeft += _gameGrid.GetPiecesOfType(obstacleTypes[i]).Count;
+        }
+        _levelHUD.SetTarget(numObstaclesLeft);
     }
     public override void OnMove()
     {
@@ -59,9 +70,25 @@ public class LevelObstacles : Level
         }
     }
 
+    /// <summary>
+    /// Add default value of 3. 
+    /// </summary>
     internal void AddObstacleMoves()
     {
         numMoves = 3;
+        movesUsed = 0;
+        _outOfMoves = false;
+        _levelHUD.SetRemaining(numMoves);
+    }
+    /// <summary>
+    /// Add Obstacle moves by a specified value
+    /// </summary>
+    /// <param name="value"> value to be added to remaining number of moves. </param>
+    /// 
+    // we shall use this for our special items. 
+    internal void AddObstacleMoves(int value)
+    {
+        numMoves = value;
         movesUsed = 0;
         _outOfMoves = false;
         _levelHUD.SetRemaining(numMoves);

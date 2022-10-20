@@ -145,6 +145,8 @@ public class GameGrid : MonoBehaviour
         // we should do this after our pieces have filled the board so we can respect our firstFill mechanic. 
         if (firstFill)
         {
+            List<GamePiece> tempList = new List<GamePiece>();
+
             for (int i = 0; i < initialPieces.Length; i++)
             {
                 // Make sure to destroy the existing piece on this position. 
@@ -152,9 +154,23 @@ public class GameGrid : MonoBehaviour
                 if (initialPieces[i].x >= 0 && initialPieces[i].x < xDim &&
                     initialPieces[i].y >= 0 && initialPieces[i].y < yDim)
                 {
+                    //print(pieces[initialPieces[i].x, initialPieces[i].y]); // this is used to get the pieces
+                    //before they are replaced
+                    tempList.Add(pieces[initialPieces[i].x, initialPieces[i].y]); 
                     SpawnNewPiece(initialPieces[i].x, initialPieces[i].y, initialPieces[i].type);
                 }
             }
+            foreach (var item in tempList)
+            {
+                item.gameObject.SetActive(false);  
+            }
+            // now if Level is obstacles, call the method to update obstacles left. 
+            if (_level.Type == Level.LevelType.OBSTACLE)
+            {
+                print("initializing Obstacles"); 
+                FindObjectOfType<LevelObstacles>().InitializeObstaclesLeft(); 
+            }
+
         }
         yield return new WaitForSeconds(fillTime);
         yield return new WaitUntil(() => !needsRefill);
