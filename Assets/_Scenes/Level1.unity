@@ -153,8 +153,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initialPieces: []
-  xDim: 6
-  yDim: 6
+  xDim: 4
+  yDim: 4
   fillTime: 0.08
   backgroundTilePrefab: {fileID: 787768537085530146, guid: 45e148e453554bb4b9e31f14765c9914, type: 3}
   piecePrefabs:

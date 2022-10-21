@@ -47,6 +47,10 @@ public class GameGrid : MonoBehaviour
 
     private bool inverse = false;
 
+    // handling reshuffling. 
+    private bool _isMatchAvailable;
+    //private bool _isChecking;
+
     // Handling Matching at Start issues with these variables. 
     Sprite LeftSprite = null;
     List<Sprite> oldList = new List<Sprite>();
@@ -61,6 +65,7 @@ public class GameGrid : MonoBehaviour
     private bool gameOver = false;
 
     public Level _level;
+
     public bool IsFilling { get; set; }
     void Awake()
     {
@@ -156,19 +161,18 @@ public class GameGrid : MonoBehaviour
                 {
                     //print(pieces[initialPieces[i].x, initialPieces[i].y]); // this is used to get the pieces
                     //before they are replaced
-                    tempList.Add(pieces[initialPieces[i].x, initialPieces[i].y]); 
+                    tempList.Add(pieces[initialPieces[i].x, initialPieces[i].y]);
                     SpawnNewPiece(initialPieces[i].x, initialPieces[i].y, initialPieces[i].type);
                 }
             }
             foreach (var item in tempList)
             {
-                item.gameObject.SetActive(false);  
+                item.gameObject.SetActive(false);
             }
             // now if Level is obstacles, call the method to update obstacles left. 
             if (_level.Type == Level.LevelType.OBSTACLE)
             {
-                print("initializing Obstacles"); 
-                FindObjectOfType<LevelObstacles>().InitializeObstaclesLeft(); 
+                FindObjectOfType<LevelObstacles>().InitializeObstaclesLeft();
             }
 
         }
@@ -176,6 +180,7 @@ public class GameGrid : MonoBehaviour
         yield return new WaitUntil(() => !needsRefill);
         IsFilling = false;
         firstFill = false;
+        
     }
     public bool FillStep()
     {
@@ -332,7 +337,6 @@ public class GameGrid : MonoBehaviour
 
     public void SwapPieces(GamePiece piece1, GamePiece piece2)
     {
-
         if (gameOver)
         {
             return;
@@ -396,7 +400,29 @@ public class GameGrid : MonoBehaviour
                 pieces[piece2.X, piece2.Y] = piece2;
             }
         }
+        StartCoroutine(CheckForAvailableMatch());
     }
+
+    IEnumerator CheckForAvailableMatch()
+    {
+        // our grid is filling like a table, top down, now fromthe ground up like 
+        // we expect. 
+        //print(pieces[1, 1].ColorComponent.GetReferencedColorSprite()); 
+        yield return new WaitForSeconds(5f);
+        // checking moving Vertically. 
+        for (int x = 1; x < xDim; x++)
+        {
+            for (int y = 1; y < yDim; y++)
+            {
+                _isMatchAvailable = pieces[x, y].PieceRayMatch();
+                if (_isMatchAvailable)
+                    print("Match available");
+                else print("Match Unavailable");
+            }
+        }
+        // checking moving Horizontally. 
+    }
+
     // one line function. 
     public void PressPiece(GamePiece piece) => pressedPiece = piece;
     public void EnterPiece(GamePiece piece) => enteredPiece = piece;
@@ -614,7 +640,7 @@ public class GameGrid : MonoBehaviour
     public bool ClearAllValidMatches()
     {
         // checking full board after a Clear for any resulting matches that can were made. 
-        // we can use this to make sure our board is randomly shuffled if they're not matches left. 
+        // we can use this similar idea to make sure our board is randomly shuffled if they're not matches left. 
         bool needsRefill = false;
         for (int y = 0; y < yDim; y++)
         {

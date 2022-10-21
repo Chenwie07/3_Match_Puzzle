@@ -338,7 +338,7 @@ MonoBehaviour:
   score1Star: 25000
   score2Star: 28000
   score3Star: 30000
-  numMoves: 2
+  numMoves: 20
   obstacleTypes: 03000000
 --- !u!1 &661085602
 GameObject:
