@@ -46,4 +46,15 @@ public class LevelTimer : Level
         timer = 0; 
         timeOut = false;
     }
+    /// <summary>
+    /// Add level time. 
+    /// </summary>
+    /// <param name="timeInSeconds"> Time in seconds to be added </param>
+    public void AddTime(int timeInSecs)
+    {
+        timeInSeconds = (int)(timeInSeconds - timer) + timeInSecs;
+        // reset timer. 
+        timer = 0;
+        timeOut = false;
+    }
 }

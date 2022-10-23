@@ -7,7 +7,7 @@ public class ColorPiece : MonoBehaviour
 {
     public enum ColorType
     {
-        YELLOW, PURPLE, RED, BLUE, GREEN, ORANGE, ANY, COUNT
+        YELLOW, PURPLE, RED, BLUE, GREEN, ORANGE, ANY, COUNT, 
     }
 
     [System.Serializable]
@@ -37,7 +37,6 @@ public class ColorPiece : MonoBehaviour
 
     private void Awake()
     {
-
         colorSpriteDictionary = new Dictionary<ColorType, Sprite>();
         for (int i = 0; i < _colorSprites.Length; i++)
         {

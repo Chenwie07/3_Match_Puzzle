@@ -114,11 +114,11 @@ public class GamePiece : MonoBehaviour
         // Diamond is a long one. 
         if (_collisionDownHits <= 1 || _collisionUpHits <= 1 || _collisionLeftHits <= 1 || _collisionRightHits <= 1)
         {
-            print("Skipping Diamond");
+            //print("Skipping Diamond");
         }
         else
         {
-            print("Checking Diamond Chance");
+            //print("Checking Diamond Chance");
             if (CheckDiamondPossibility())
                 return true;
         }
@@ -241,167 +241,170 @@ public class GamePiece : MonoBehaviour
 
         return false;
     }
+
+    // For all Check Swap Methods, basically, if the center piece (Piece casting the rays
+    // on all axis) is not movable, then the swap can't be done. 
     private bool Check_CSwapDown()
     {
-        print("Checking C Down Possibility");
+        //print("Checking C Down Possibility");
         if (hitUp[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite ==
             hitRight[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite &&
             hitRight[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite ==
             hitLeft[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite)
         {
-            print("A C swap Down chance");
+            //print("A C swap Down chance");
             return true;
         }
         return false;
     }
     private bool Check_CSwapUp()
     {
-        print("Checking C Up Possibility");
-
+        //print("Checking C Up Possibility");
+      
         if (hitDown[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite ==
            hitLeft[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite &&
            hitLeft[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite ==
            hitRight[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite)
         {
-            print("A C swap Up chance");
+            //print("A C swap Up chance");
             return true;
         }
         return false;
     }
     private bool Check_CSwapLeft()
     {
-        print("Checking C Left Possibility");
+        //print("Checking C Left Possibility");
 
         if (hitRight[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite ==
            hitUp[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite &&
            hitUp[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite ==
            hitDown[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite)
         {
-            print("A C swap Left chance");
+            //print("A C swap Left chance");
             return true;
         }
         return false;
     }
     private bool Check_CSwapRight()
     {
-        print("Checking C RIght Possibility");
+        //print("Checking C RIght Possibility");
 
         if (hitLeft[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite ==
              hitUp[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite &&
              hitUp[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite ==
              hitDown[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite)
         {
-            print("A C swap Right chance");
+            //print("A C swap Right chance");
             return true;
         }
         return false;
     }
     private bool Check_LSwapRight()
     {
-        print("Checking L Right");
+        //print("Checking L Right");
         if (hitLeft[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite ==
             hitDown[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite
             && hitDown[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite ==
             hitDown[2].collider.gameObject.GetComponent<SpriteRenderer>().sprite)
         {
-            print("L swap Right chance");
+            //print("L swap Right chance");
             return true;
         }
         return false;
     }
     private bool Check_LSwapLeft()
     {
-        print("Checking L Left");
+        //print("Checking L Left");
 
         if (hitRight[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite ==
            hitUp[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite
            && hitUp[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite ==
            hitUp[2].collider.gameObject.GetComponent<SpriteRenderer>().sprite)
         {
-            print("L swap Left chance");
+            //print("L swap Left chance");
             return true;
         }
         return false;
     }
     private bool Check_LSwapDown()
     {
-        print("Checking L Down");
+        //print("Checking L Down");
 
         if (hitUp[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite ==
           hitRight[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite
           && hitRight[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite ==
           hitRight[2].collider.gameObject.GetComponent<SpriteRenderer>().sprite)
         {
-            print("L swap Left chance");
+            //print("L swap Left chance");
             return true;
         }
         return false;
     }
     private bool Check_LSwapUp()
     {
-        print("Checking L Up");
+        //print("Checking L Up");
 
         if (hitDown[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite ==
           hitLeft[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite
           && hitLeft[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite ==
           hitLeft[2].collider.gameObject.GetComponent<SpriteRenderer>().sprite)
         {
-            print("L swap Left chance");
+            //print("L swap Left chance");
             return true;
         }
         return false;
     }
     private bool CheckSwapDownPossibility()
     {
-        print("Checking Down Possibility");
+        //print("Checking Down Possibility");
         if (hitUp[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite
             == hitDown[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite
             && hitDown[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite
             == hitDown[2].collider.gameObject.GetComponent<SpriteRenderer>().sprite)
         {
-            print(" A Vertical Down Possibility");
+            //print(" A Vertical Down Possibility");
             return true;
         }
         return false;
     }
     private bool CheckSwapUpPossibility()
     {
-        print("Checking Up Possibility");
+        //print("Checking Up Possibility");
 
         if (hitDown[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite
            == hitUp[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite
            && hitUp[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite
            == hitUp[2].collider.gameObject.GetComponent<SpriteRenderer>().sprite)
         {
-            print("A vertical Up Possibility");
+            //print("A vertical Up Possibility");
             return true;
         }
         return false;
     }
     private bool CheckSwapRightPossibility()
     {
-        print("Checking Right Possibility");
+        //print("Checking Right Possibility");
 
         if (hitLeft[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite
             == hitRight[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite
             && hitRight[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite
             == hitRight[2].collider.gameObject.GetComponent<SpriteRenderer>().sprite)
         {
-            print("A horizontal Swap Right Possibility");
+            //print("A horizontal Swap Right Possibility");
             return true;
         }
         return false;
     }
     private bool CheckSwapLeftPossibility()
     {
-        print("Checking Left Possibility");
+        //print("Checking Left Possibility");
 
         if (hitRight[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite
             == hitLeft[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite
             && hitLeft[1].collider.gameObject.GetComponent<SpriteRenderer>().sprite
             == hitLeft[2].collider.gameObject.GetComponent<SpriteRenderer>().sprite)
         {
-            print("A horizontal Swap Left Possibility");
+            //print("A horizontal Swap Left Possibility");
             return true;
         }
         return false;
@@ -439,12 +442,9 @@ public class GamePiece : MonoBehaviour
 
             )
         {
-            print("A Diamond Possibility");
+            //print("A Diamond Possibility");
             return true;
         }
         return false;
     }
-
-
-
 }

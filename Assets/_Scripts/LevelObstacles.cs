@@ -75,7 +75,7 @@ public class LevelObstacles : Level
     /// </summary>
     internal void AddObstacleMoves()
     {
-        numMoves = 3;
+        numMoves = 5;
         movesUsed = 0;
         _outOfMoves = false;
         _levelHUD.SetRemaining(numMoves);
@@ -88,7 +88,7 @@ public class LevelObstacles : Level
     // we shall use this for our special items. 
     internal void AddObstacleMoves(int value)
     {
-        numMoves = value;
+        numMoves += value;
         movesUsed = 0;
         _outOfMoves = false;
         _levelHUD.SetRemaining(numMoves);

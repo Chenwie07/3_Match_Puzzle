@@ -51,4 +51,15 @@ public class LevelMoves : Level
         _outOfMoves = false;
         _levelHUD.SetRemaining(numMoves); 
     }
+    /// <summary>
+    /// Add moves to level
+    /// </summary>
+    /// <param name="movesToAdd"> The number of moves to be added </param>
+    public void AddMoves(int movesToAdd)
+    {
+        numMoves = (numMoves - movesUsed) + movesToAdd;
+        movesUsed = 0;
+        _outOfMoves = false;
+        _levelHUD.SetRemaining(numMoves);
+    }
 }

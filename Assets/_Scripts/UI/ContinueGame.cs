@@ -36,7 +36,7 @@ public class ContinueGame : MonoBehaviour
         else if (LevelType == "Obstacles")
         {
             // add moves still. 
-            retryHint.SetText("Spend 1 heart to buy +3 extra moves...");
+            retryHint.SetText("Spend 1 heart to buy +5 extra moves...");
             FindObjectOfType<LevelObstacles>().AddObstacleMoves(); 
             // notify observers is a good way here (for now we go the long route). 
         }

@@ -13,6 +13,9 @@ public class GameGrid : MonoBehaviour
         ROW_CLEAR,
         COLUMN_CLEAR,
         RAINBOW,
+        CHERRY,
+        BANANA,
+        STAR,
         COUNT,
     };
 
@@ -32,13 +35,14 @@ public class GameGrid : MonoBehaviour
     }
     public PiecePosition[] initialPieces;
 
-
     public int xDim;
     public int yDim;
     public float fillTime;
 
     public GameObject backgroundTilePrefab;
     public PiecePrefab[] piecePrefabs;
+    public GameObject[] specialPiecePrefabs; // 0 - Banana, 1 - Cherry, 2 - Star. 
+
 
     // dictionaries can't be loaded on the inspector, so we load a structure that will get the KvP we need. 
     private Dictionary<PieceType, GameObject> piecePrefabDictionary;
@@ -49,7 +53,7 @@ public class GameGrid : MonoBehaviour
 
     // handling reshuffling. 
     private bool _isMatchAvailable;
-    //private bool _isChecking;
+    //private bool _isChecking; 
 
     // Handling Matching at Start issues with these variables. 
     Sprite LeftSprite = null;
@@ -178,9 +182,8 @@ public class GameGrid : MonoBehaviour
         }
         yield return new WaitForSeconds(fillTime);
         yield return new WaitUntil(() => !needsRefill);
-        IsFilling = false;
         firstFill = false;
-        
+        IsFilling = false;
     }
     public bool FillStep()
     {
@@ -328,13 +331,11 @@ public class GameGrid : MonoBehaviour
 
         return pieces[x, y];
     }
-
     public bool IsAdjacent(GamePiece piece1, GamePiece piece2)
     {
         return (piece1.X == piece2.X && (int)Mathf.Abs(piece1.Y - piece2.Y) == 1
             || (piece1.Y == piece2.Y && (int)Mathf.Abs(piece1.X - piece2.X) == 1));
     }
-
     public void SwapPieces(GamePiece piece1, GamePiece piece2)
     {
         if (gameOver)
@@ -353,6 +354,15 @@ public class GameGrid : MonoBehaviour
             {
                 int piece1X = piece1.X;
                 int piece1Y = piece1.Y;
+
+                Reshuffle.Singleton.InCombo = true;
+                Reshuffle.Singleton.ComboCounter += 1;
+                if (Reshuffle.Singleton.ComboCounter > 5)
+                {
+                    SpawnSpecialPiece();
+                }
+                // you can only move if you get a match. 
+                // so this is a good place to set our Combo status. 
 
                 piece1.MovableComponent.MovePiece(piece2.X, piece2.Y, fillTime);
                 piece2.MovableComponent.MovePiece(piece1X, piece1Y, fillTime);
@@ -400,29 +410,89 @@ public class GameGrid : MonoBehaviour
                 pieces[piece2.X, piece2.Y] = piece2;
             }
         }
-        StartCoroutine(CheckForAvailableMatch());
+    }
+    private void SpawnSpecialPiece()
+    {
+        var odds = Random.Range(0, 10);
+        int randomX = Random.Range(0, xDim);
+        int randomY = Random.Range(0, yDim);
+
+        // keep doing this until you pick up a non obstacle piece. 
+        while (pieces[randomX, randomY].gameObject.CompareTag("Obstacle"))
+        {
+            randomX = Random.Range(0, xDim);
+            randomY = Random.Range(0, yDim);
+        }
+        //pieces[randomX, randomY].gameObject.SetActive(false);
+        //SpawnNewPiece(randomX, randomY, PieceType.CHERRY);
+        if (odds == 1) // so there's only a .1 chance of spawning star
+        {
+            pieces[randomX, randomY].gameObject.SetActive(false);
+            SpawnNewPiece(randomX, randomY, PieceType.STAR);
+        }
+        else if (odds < 3) // there's a .3 chance of spawning cherry
+        {
+            pieces[randomX, randomY].gameObject.SetActive(false);
+            SpawnNewPiece(randomX, randomY, PieceType.CHERRY);
+        }
+        else
+        {
+            pieces[randomX, randomY].gameObject.SetActive(false);
+            SpawnNewPiece(randomX, randomY, PieceType.BANANA);
+        }
+        Reshuffle.Singleton.ComboCounter = 0;
     }
 
+    internal void KickOfCheck()
+    {
+        Reshuffle.Singleton.currentTime = 0;
+        StartCoroutine(CheckForAvailableMatch());
+    }
+    // The best instance to check this, is if after some time the user 
+    // haven't caused the clear method to be called. Maybe after 10 seconds. 
     IEnumerator CheckForAvailableMatch()
     {
-        // our grid is filling like a table, top down, now fromthe ground up like 
+        // Take care of the case it's still saying there's a match because it thinks obstacles can be moved too. 
+        // our grid is filling like a table, top down, not from the ground up unlike 
         // we expect. 
-        //print(pieces[1, 1].ColorComponent.GetReferencedColorSprite()); 
-        yield return new WaitForSeconds(5f);
-        // checking moving Vertically. 
-        for (int x = 1; x < xDim; x++)
+        //print(pieces[1, 1].ColorComponent.GetReferencedColorSprite());
+
+        for (int x = 0; x < xDim; x++)
         {
-            for (int y = 1; y < yDim; y++)
+            for (int y = 0; y < yDim; y++)
             {
                 _isMatchAvailable = pieces[x, y].PieceRayMatch();
                 if (_isMatchAvailable)
-                    print("Match available");
-                else print("Match Unavailable");
+                {
+                    //print("Match Found, Exiting Routine with nothing to show for it");
+                    Reshuffle.Singleton._alreadyChecked = true;// we have checked the existing grid
+                                                               //_isChecking = false;
+                    yield break; // end the routine. 
+                }
             }
         }
-        // checking moving Horizontally. 
-    }
 
+        ClearAllNonObstaclePieces();
+        Reshuffle.Singleton._alreadyChecked = false;
+        yield return null;
+    }
+    private void ClearAllNonObstaclePieces()
+    {
+        for (int x = 0; x < xDim; x++)
+        {
+            for (int y = 0; y < yDim; y++)
+            {
+                // clear all Normal pieces and maybe special pieces too. 
+                if (pieces[x, y].Type == PieceType.NORMAL)
+                {
+                    pieces[x, y].ClearableComponent.ClearPiece();
+                    // spawn an empty piece in it's place. 
+                    SpawnNewPiece(x, y, PieceType.EMPTY); // apparently we need to spawn new empty pieces or something along the entire board. 
+                }
+            }
+        }
+        StartCoroutine(Fill()); // fill the board once more. 
+    }
     // one line function. 
     public void PressPiece(GamePiece piece) => pressedPiece = piece;
     public void EnterPiece(GamePiece piece) => enteredPiece = piece;
@@ -473,6 +543,13 @@ public class GameGrid : MonoBehaviour
                         horizontalPieces.Add(pieces[x, newY]);
                     }
                     else
+                    // if you encounter a booster with matching colors, add too. 
+                    if (pieces[x, newY].GetComponent<BoosterPiece>() != null &&
+                        pieces[x, newY].GetComponent<BoosterPiece>()._boosterColor.ToString() == color.ToString())
+                    {
+                        horizontalPieces.Add(pieces[x, newY]);
+                    }
+                    else
                     {
                         break; // stop traversing in this direction. 
                     }
@@ -512,6 +589,13 @@ public class GameGrid : MonoBehaviour
                                 break; // outside dimensions. 
                             }
                             if (pieces[horizontalPieces[i].X, y].IsColored() && pieces[horizontalPieces[i].X, y].ColorComponent.Color == color)
+                            {
+                                verticalPieces.Add(pieces[horizontalPieces[i].X, y]);
+                            }
+                            else
+                            // add any boosters with matching colors. 
+                            if (pieces[horizontalPieces[i].X, y].GetComponent<BoosterPiece>() != null &&
+                       pieces[horizontalPieces[i].X, y].GetComponent<BoosterPiece>()._boosterColor.ToString() == color.ToString())
                             {
                                 verticalPieces.Add(pieces[horizontalPieces[i].X, y]);
                             }
@@ -569,6 +653,13 @@ public class GameGrid : MonoBehaviour
                         verticalPieces.Add(pieces[newX, y]);
                     }
                     else
+                    // add any boosters with matching colors. 
+                    if (pieces[newX, y].GetComponent<BoosterPiece>() != null &&
+               pieces[newX, y].GetComponent<BoosterPiece>()._boosterColor.ToString() == color.ToString())
+                    {
+                        verticalPieces.Add(pieces[newX, y]);
+                    }
+                    else
                     {
                         break;
                     }
@@ -610,6 +701,12 @@ public class GameGrid : MonoBehaviour
                             if (pieces[x, verticalPieces[i].Y].IsColored() && pieces[x, verticalPieces[i].Y].ColorComponent.Color == color)
                             {
                                 //verticalPieces.Add(pieces[x, verticalPieces[i].Y]);
+                                horizontalPieces.Add(pieces[x, verticalPieces[i].Y]);
+                            }
+                            else
+                            if (pieces[x, verticalPieces[i].Y].GetComponent<BoosterPiece>() != null &&
+                             pieces[x, verticalPieces[i].Y].GetComponent<BoosterPiece>()._boosterColor.ToString() == color.ToString())
+                            {
                                 horizontalPieces.Add(pieces[x, verticalPieces[i].Y]);
                             }
                             else { break; }
@@ -716,11 +813,21 @@ public class GameGrid : MonoBehaviour
     {
         if (pieces[x, y].IsClearable() && !pieces[x, y].ClearableComponent.IsBeingCleared)
         {
+            if (pieces[x, y].GetComponent<BoosterPiece>() != null)
+            {
+                pieces[x, y].GetComponent<BoosterPiece>().OnBoosterClear(pieces[x, y].
+                    GetComponent<BoosterPiece>().
+                    _boosterType);
+            }
             pieces[x, y].ClearableComponent.ClearPiece(); // clear the piece
             SpawnNewPiece(x, y, PieceType.EMPTY);
 
             ClearObstacles(x, y);
             PlaySFX.Singleton.AUDIO_PlayClearFX(); // play clear fx. 
+            // if a clear is made, reset reshuffle Time and also we haven't checked the new grid;
+            Reshuffle.Singleton.currentTime = 0;
+            Reshuffle.Singleton._alreadyChecked = false;
+            //print(Reshuffle.Singleton.currentTime);
             return true;
         }
         return false;
@@ -769,7 +876,6 @@ public class GameGrid : MonoBehaviour
                 }
             }
         }
-        // otherwise for our Iceblock, we have to operate differently. 
     }
 
     #region SPECIAL TILES CLEAR 

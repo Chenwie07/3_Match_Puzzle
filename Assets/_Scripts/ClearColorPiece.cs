@@ -15,7 +15,7 @@ public class ClearColorPiece : ClearablePiece
     {
         base.ClearPiece();
 
-        piece.GridRef.ClearColor(color); 
+        piece.GridRef.ClearColor(Color); 
 
     }
 }
